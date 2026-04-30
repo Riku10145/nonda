@@ -7,7 +7,7 @@
   },
   "settings": {
     "next": {
-      "rootDir": "apps/web/"
+      "rootDir": "."
     },
     "react": {
       "version": "19.2.5"
