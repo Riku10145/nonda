@@ -1,0 +1,23 @@
+{
+  "name": "api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.13.7",
+    "@hono/standard-validator": "^0.2.2",
+    "hono": "^4.7.7",
+    "valibot": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25",
+    "tsx": "^4.19.3",
+    "typescript": "^5"
+  }
+}
