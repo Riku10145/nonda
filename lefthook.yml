@@ -11,7 +11,13 @@ pre-commit:
       glob: "*.{js,ts,jsx,tsx}"
       run: pnpm lint:oxlint {staged_files}
 
+    - name: api-fmt
+      root: apps/api
+      glob: "*.{js,ts}"
+      run: pnpm fmt {staged_files}
+      stage_fixed: true
+
     - name: api-lint
       root: apps/api
       glob: "*.{js,ts}"
-      run: pnpm lint {staged_files}
+      run: pnpm lint:oxlint {staged_files}
