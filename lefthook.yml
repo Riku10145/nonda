@@ -1,0 +1,17 @@
+pre-commit:
+  jobs:
+    - name: web-fmt
+      root: apps/web
+      glob: "*.{js,ts,jsx,tsx,css}"
+      run: pnpm fmt {staged_files}
+      stage_fixed: true
+
+    - name: web-lint
+      root: apps/web
+      glob: "*.{js,ts,jsx,tsx}"
+      run: pnpm lint:oxlint {staged_files}
+
+    - name: api-lint
+      root: apps/api
+      glob: "*.{js,ts}"
+      run: pnpm lint {staged_files}
