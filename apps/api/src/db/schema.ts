@@ -18,7 +18,10 @@ export const users = pgTable("users", {
   email: varchar("email", { length: 255 }).notNull().unique(),
   password: varchar("password", { length: 255 }).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
 });
 
 export const medicines = pgTable(
@@ -31,7 +34,10 @@ export const medicines = pgTable(
     name: varchar("name", { length: 255 }).notNull(),
     photoUrl: text("photo_url"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
   },
   (table) => [index("idx_medicines_user_id").on(table.userId)],
 );
@@ -45,7 +51,10 @@ export const medicineTimings = pgTable(
       .references(() => medicines.id, { onDelete: "cascade" }),
     timing: timingEnum("timing").notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
   },
   (table) => [unique("uq_medicine_timings_medicine_id_timing").on(table.medicineId, table.timing)],
 );
@@ -60,7 +69,10 @@ export const medicationLogs = pgTable(
     recordedAt: timestamp("recorded_at", { withTimezone: true }).notNull(),
     isTaken: boolean("is_taken").notNull().default(false),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
   },
   (table) => [
     index("idx_medication_logs_medicine_id").on(table.medicineId),
@@ -79,7 +91,10 @@ export const notificationSettings = pgTable(
     notifyTime: time("notify_time").notNull(),
     isEnabled: boolean("is_enabled").notNull().default(true),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
   },
   (table) => [unique("uq_notification_settings_user_id_timing").on(table.userId, table.timing)],
 );
