@@ -30,6 +30,6 @@
     "oxfmt": "^0.47.0",
     "oxlint": "^1.62.0",
     "tsx": "^4.19.3",
-    "typescript": "^5"
+    "typescript": "^6"
   }
 }
