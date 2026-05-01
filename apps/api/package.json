@@ -10,16 +10,22 @@
     "lint": "eslint src",
     "lint:oxlint": "oxlint src",
     "fmt": "oxfmt .",
-    "fmt:check": "oxfmt --check ."
+    "fmt:check": "oxfmt --check .",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@hono/node-server": "^1.13.7",
     "@hono/standard-validator": "^0.2.2",
+    "@neondatabase/serverless": "^1.1.0",
+    "drizzle-orm": "^0.45.2",
     "hono": "^4.7.7",
     "valibot": "^1.0.0"
   },
   "devDependencies": {
     "@types/node": "^25",
+    "drizzle-kit": "^0.31.10",
     "oxfmt": "^0.47.0",
     "oxlint": "^1.62.0",
     "tsx": "^4.19.3",
