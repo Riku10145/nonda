@@ -1,6 +1,6 @@
 {
-  "id": "39e71dcf-d6f0-4082-ad4c-d441d78c6739",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "f3766149-82e1-4871-bc23-603cf6ce1c64",
+  "prevId": "da6c2469-36ae-4602-aa40-03761a9ba6e0",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -21,8 +21,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "taken_at": {
-          "name": "taken_at",
+        "recorded_at": {
+          "name": "recorded_at",
           "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true
@@ -65,11 +65,11 @@
           "method": "btree",
           "with": {}
         },
-        "idx_medication_logs_taken_at": {
-          "name": "idx_medication_logs_taken_at",
+        "idx_medication_logs_recorded_at": {
+          "name": "idx_medication_logs_recorded_at",
           "columns": [
             {
-              "expression": "taken_at",
+              "expression": "recorded_at",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -86,8 +86,12 @@
           "name": "medication_logs_medicine_id_medicines_id_fk",
           "tableFrom": "medication_logs",
           "tableTo": "medicines",
-          "columnsFrom": ["medicine_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "medicine_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -137,36 +141,33 @@
           "default": "now()"
         }
       },
-      "indexes": {
-        "idx_medicine_timings_medicine_id": {
-          "name": "idx_medicine_timings_medicine_id",
-          "columns": [
-            {
-              "expression": "medicine_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
+      "indexes": {},
       "foreignKeys": {
         "medicine_timings_medicine_id_medicines_id_fk": {
           "name": "medicine_timings_medicine_id_medicines_id_fk",
           "tableFrom": "medicine_timings",
           "tableTo": "medicines",
-          "columnsFrom": ["medicine_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "medicine_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "uq_medicine_timings_medicine_id_timing": {
+          "name": "uq_medicine_timings_medicine_id_timing",
+          "nullsNotDistinct": false,
+          "columns": [
+            "medicine_id",
+            "timing"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -237,8 +238,12 @@
           "name": "medicines_user_id_users_id_fk",
           "tableFrom": "medicines",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -301,36 +306,33 @@
           "default": "now()"
         }
       },
-      "indexes": {
-        "idx_notification_settings_user_id": {
-          "name": "idx_notification_settings_user_id",
-          "columns": [
-            {
-              "expression": "user_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
+      "indexes": {},
       "foreignKeys": {
         "notification_settings_user_id_users_id_fk": {
           "name": "notification_settings_user_id_users_id_fk",
           "tableFrom": "notification_settings",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "uq_notification_settings_user_id_timing": {
+          "name": "uq_notification_settings_user_id_timing",
+          "nullsNotDistinct": false,
+          "columns": [
+            "user_id",
+            "timing"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -380,7 +382,9 @@
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
-          "columns": ["email"]
+          "columns": [
+            "email"
+          ]
         }
       },
       "policies": {},
@@ -392,7 +396,11 @@
     "public.timing_enum": {
       "name": "timing_enum",
       "schema": "public",
-      "values": ["morning", "afternoon", "evening"]
+      "values": [
+        "morning",
+        "afternoon",
+        "evening"
+      ]
     }
   },
   "schemas": {},

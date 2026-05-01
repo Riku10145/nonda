@@ -8,6 +8,20 @@
       "when": 1777604986144,
       "tag": "0000_foamy_timeslip",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1777606015360,
+      "tag": "0001_hot_brood",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1777606393074,
+      "tag": "0002_noisy_nuke",
+      "breakpoints": true
     }
   ]
 }

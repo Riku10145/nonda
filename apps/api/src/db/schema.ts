@@ -6,6 +6,7 @@ import {
   text,
   time,
   timestamp,
+  unique,
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
@@ -46,7 +47,7 @@ export const medicineTimings = pgTable(
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   },
-  (table) => [index("idx_medicine_timings_medicine_id").on(table.medicineId)],
+  (table) => [unique("uq_medicine_timings_medicine_id_timing").on(table.medicineId, table.timing)],
 );
 
 export const medicationLogs = pgTable(
@@ -56,14 +57,14 @@ export const medicationLogs = pgTable(
     medicineId: uuid("medicine_id")
       .notNull()
       .references(() => medicines.id, { onDelete: "cascade" }),
-    takenAt: timestamp("taken_at", { withTimezone: true }).notNull(),
+    recordedAt: timestamp("recorded_at", { withTimezone: true }).notNull(),
     isTaken: boolean("is_taken").notNull().default(false),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => [
     index("idx_medication_logs_medicine_id").on(table.medicineId),
-    index("idx_medication_logs_taken_at").on(table.takenAt),
+    index("idx_medication_logs_recorded_at").on(table.recordedAt),
   ],
 );
 
@@ -80,5 +81,5 @@ export const notificationSettings = pgTable(
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   },
-  (table) => [index("idx_notification_settings_user_id").on(table.userId)],
+  (table) => [unique("uq_notification_settings_user_id_timing").on(table.userId, table.timing)],
 );
