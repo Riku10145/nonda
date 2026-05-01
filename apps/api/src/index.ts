@@ -1,32 +1,31 @@
-import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { trimTrailingSlash } from "hono/trailing-slash";
 import { routes } from "./routes/index.js";
 
-const app = new Hono();
+type Bindings = {
+  DATABASE_URL: string;
+  FRONTEND_URL: string;
+};
+
+const app = new Hono<{ Bindings: Bindings }>();
 
 app.use("*", logger());
 app.use(trimTrailingSlash());
-app.use(
-  "/api/*",
+app.use("/api/*", (c, next) =>
   cors({
-    origin: process.env.FRONTEND_URL ?? "http://localhost:3000",
+    origin: c.env.FRONTEND_URL,
     allowMethods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowHeaders: ["Content-Type", "Authorization"],
     credentials: true,
-  }),
+  })(c, next),
 );
 
 app.route("/api", routes);
 
 app.get("/health", (c) => c.json({ status: "ok" }));
 
-const port = Number(process.env.PORT) || 8080;
-
-serve({ fetch: app.fetch, port }, (info) => {
-  console.log(`Server running on http://localhost:${info.port}`);
-});
-
 export type AppType = typeof app;
+
+export default app;

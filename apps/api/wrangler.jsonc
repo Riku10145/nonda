@@ -1,0 +1,9 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "nonda-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-05-01",
+  "vars": {
+    "FRONTEND_URL": "http://localhost:3000",
+  },
+}

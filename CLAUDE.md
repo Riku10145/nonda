@@ -6,7 +6,7 @@
 
 ```
 apps/web   - Next.js 16 (App Router) フロントエンド
-apps/api   - Hono バックエンド (port 8080)
+apps/api   - Hono バックエンド (Cloudflare Workers / wrangler dev は 8787)
 packages/types - 共通型定義（未実装）
 ```
 
@@ -18,7 +18,10 @@ pnpm install
 
 # 開発サーバー
 pnpm --filter web dev   # localhost:3000
-pnpm --filter api dev   # localhost:8080
+pnpm --filter api dev   # localhost:8787 (doppler run -- wrangler dev / Doppler CLI が必要)
+
+# デプロイ
+pnpm --filter api deploy   # wrangler deploy
 
 # Lint / Format (web)
 pnpm --filter web lint:oxlint   # oxlint
