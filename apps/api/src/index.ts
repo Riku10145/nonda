@@ -9,9 +9,21 @@ type Bindings = {
   FRONTEND_URL: string;
 };
 
+const REQUIRED_ENV_KEYS = ["DATABASE_URL", "FRONTEND_URL"] as const satisfies ReadonlyArray<
+  keyof Bindings
+>;
+
 const app = new Hono<{ Bindings: Bindings }>();
 
 app.use("*", logger());
+app.use("*", async (c, next) => {
+  const missing = REQUIRED_ENV_KEYS.filter((key) => !c.env[key]);
+  if (missing.length > 0) {
+    console.error(`Missing required env vars: ${missing.join(", ")}`);
+    return c.json({ error: { code: "INTERNAL_ERROR", message: "Server misconfigured" } }, 500);
+  }
+  await next();
+});
 app.use(trimTrailingSlash());
 app.use("/api/*", (c, next) =>
   cors({

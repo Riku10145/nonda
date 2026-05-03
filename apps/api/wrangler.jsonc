@@ -3,14 +3,6 @@
   "name": "nonda-api",
   "main": "src/index.ts",
   "compatibility_date": "2026-05-01",
-  "vars": {
-    // FRONTEND_URL / DATABASE_URL の source of truth は Doppler。
-    // ローカルは `doppler run -- wrangler dev` で注入される。
-    // デプロイ時は GitHub Actions が `doppler secrets download | wrangler secret bulk`
-    // で Doppler dev config の値を worker secrets として流し込む。
-    // ここの値は wrangler dev のフォールバック用。
-    "FRONTEND_URL": "http://localhost:3000",
-  },
   "env": {
     "dev": {
       "name": "nonda-api-dev",
