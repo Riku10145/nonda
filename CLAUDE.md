@@ -20,9 +20,6 @@ pnpm install
 pnpm --filter web dev   # localhost:3000
 pnpm --filter api dev   # localhost:8787 (doppler run -- wrangler dev / Doppler CLI が必要)
 
-# デプロイ
-pnpm --filter api deploy   # wrangler deploy
-
 # Lint / Format (web)
 pnpm --filter web lint:oxlint   # oxlint
 pnpm --filter web fmt           # oxfmt (自動修正)
