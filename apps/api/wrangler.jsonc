@@ -6,9 +6,17 @@
   "vars": {
     // FRONTEND_URL / DATABASE_URL の source of truth は Doppler。
     // ローカルは `doppler run -- wrangler dev` で注入される。
-    // 本番デプロイ時は Doppler の Cloudflare Workers Integration、
-    // もしくは CI で `wrangler secret put` 経由で Cloudflare 側に sync する想定。
+    // デプロイ時は GitHub Actions が `doppler secrets download | wrangler secret bulk`
+    // で Doppler dev config の値を worker secrets として流し込む。
     // ここの値は wrangler dev のフォールバック用。
     "FRONTEND_URL": "http://localhost:3000",
+  },
+  "env": {
+    "dev": {
+      "name": "nonda-api-dev",
+      // dev デプロイ後の secrets は GitHub Actions の sync ステップで
+      // Doppler dev config から push される。
+      // ここに vars を置くと Doppler との二重管理になるため空にする。
+    },
   },
 }
