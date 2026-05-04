@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 
-import { medicinesRoute } from "./medicines.js";
+import { medicinesRoute } from "./medicines/index.js";
 
 type Bindings = {
   DATABASE_URL: string;

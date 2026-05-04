@@ -1,0 +1,2 @@
+ALTER TABLE "medication_logs" ADD COLUMN "timing" "timing_enum" NOT NULL;--> statement-breakpoint
+CREATE INDEX "idx_medication_logs_medicine_recorded_at" ON "medication_logs" USING btree ("medicine_id","recorded_at");
