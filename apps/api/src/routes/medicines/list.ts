@@ -20,6 +20,7 @@ export const listMedicines = new Hono<MedicinesEnv>().get(
     const { today } = c.req.valid("query");
     const db = createDbClient(c.env.DATABASE_URL);
 
+    //TODO: medsという命名わかりにくい。省略しない方がよいかも
     const meds = await db
       .select({
         id: medicines.id,
@@ -32,7 +33,7 @@ export const listMedicines = new Hono<MedicinesEnv>().get(
     if (meds.length === 0) {
       return c.json([]);
     }
-
+    //TODO: ここもmだとわかりにくい。medicineとかにした方が良いかも
     const medicineIds = meds.map((m) => m.id);
 
     const timings = await db
