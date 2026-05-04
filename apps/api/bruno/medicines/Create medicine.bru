@@ -1,0 +1,35 @@
+meta {
+  name: Create medicine
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/v1/medicines
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  x-user-id: {{devUserId}}
+}
+
+body:json {
+  {
+    "name": "ロキソニン",
+    "timings": ["morning", "evening"]
+  }
+}
+
+tests {
+  test("status is 201", function() {
+    expect(res.getStatus()).to.equal(201);
+  });
+  test("returns id", function() {
+    expect(res.getBody().id).to.be.a("string");
+  });
+  test("timings match", function() {
+    expect(res.getBody().timings).to.eql(["morning", "evening"]);
+  });
+}
