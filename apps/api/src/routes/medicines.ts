@@ -1,5 +1,4 @@
 import { sValidator } from "@hono/standard-validator";
-import { eq } from "drizzle-orm";
 import { Hono } from "hono";
 import * as v from "valibot";
 
@@ -46,13 +45,16 @@ medicinesRoute.post("/", sValidator("json", CreateMedicineSchema), async (c) => 
   const uniqueTimings = [...new Set(body.timings)];
   const medicineId = crypto.randomUUID();
 
-  await db.batch([
-    db.insert(medicines).values({
-      id: medicineId,
-      userId,
-      name: body.name,
-      photoUrl: body.photo_url ?? null,
-    }),
+  const [[inserted]] = await db.batch([
+    db
+      .insert(medicines)
+      .values({
+        id: medicineId,
+        userId,
+        name: body.name,
+        photoUrl: body.photo_url ?? null,
+      })
+      .returning(),
     db.insert(medicineTimings).values(
       uniqueTimings.map((timing) => ({
         medicineId,
@@ -61,15 +63,13 @@ medicinesRoute.post("/", sValidator("json", CreateMedicineSchema), async (c) => 
     ),
   ]);
 
-  const [created] = await db.select().from(medicines).where(eq(medicines.id, medicineId));
-
   return c.json(
     {
-      id: created.id,
-      name: created.name,
+      id: inserted.id,
+      name: inserted.name,
       timings: uniqueTimings,
-      photo_url: created.photoUrl,
-      created_at: created.createdAt,
+      photo_url: inserted.photoUrl,
+      created_at: inserted.createdAt,
     },
     201,
   );
