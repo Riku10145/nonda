@@ -6,3 +6,4 @@ ignoredBuiltDependencies:
   - unrs-resolver
 onlyBuiltDependencies:
   - lefthook
+  - workerd
