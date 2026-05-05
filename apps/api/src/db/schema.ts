@@ -66,6 +66,7 @@ export const medicationLogs = pgTable(
     medicineId: uuid("medicine_id")
       .notNull()
       .references(() => medicines.id, { onDelete: "cascade" }),
+    timing: timingEnum("timing").notNull(),
     recordedAt: timestamp("recorded_at", { withTimezone: true }).notNull(),
     isTaken: boolean("is_taken").notNull().default(false),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
@@ -77,6 +78,7 @@ export const medicationLogs = pgTable(
   (table) => [
     index("idx_medication_logs_medicine_id").on(table.medicineId),
     index("idx_medication_logs_recorded_at").on(table.recordedAt),
+    index("idx_medication_logs_medicine_recorded_at").on(table.medicineId, table.recordedAt),
   ],
 );
 
