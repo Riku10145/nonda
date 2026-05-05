@@ -13,7 +13,7 @@ src/
   schemas/        - 入出力スキーマ (valibot) ※未分離
   services/       - 業務ロジック / DB アクセス ※未分離
   db/             - Drizzle スキーマとクライアント (schema.ts, client.ts)
-  utils/          - 横断ユーティリティ (jst.ts など) 
+  utils/          - 横断ユーティリティ (jst.ts など)
   types/          - 共通型 ※未分離
 drizzle/          - 生成済みマイグレーション SQL
 bruno/            - Bruno API クライアント定義
