@@ -1,14 +1,14 @@
-import { sValidator } from "@hono/standard-validator";
 import { Hono } from "hono";
 
 import { createDbClient } from "../../db/client.js";
 import { CreateMedicineSchema } from "../../schemas/medicines/index.js";
 import { createMedicine } from "../../services/medicines/index.js";
 import type { AppEnv } from "../../types/index.js";
+import { validator } from "../../utils/validator.js";
 
 export const createMedicineRoute = new Hono<AppEnv>().post(
   "/",
-  sValidator("json", CreateMedicineSchema),
+  validator("json", CreateMedicineSchema),
   async (c) => {
     const userId = c.get("userId");
     const body = c.req.valid("json");

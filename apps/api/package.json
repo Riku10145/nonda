@@ -17,6 +17,7 @@
   "dependencies": {
     "@hono/standard-validator": "^0.2.2",
     "@neondatabase/serverless": "^1.1.0",
+    "@standard-schema/spec": "^1.1.0",
     "drizzle-orm": "^0.45.2",
     "hono": "^4.7.7",
     "valibot": "^1.0.0"
