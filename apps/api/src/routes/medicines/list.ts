@@ -27,7 +27,8 @@ export const listMedicines = new Hono<MedicinesEnv>().get(
         photoUrl: medicines.photoUrl,
       })
       .from(medicines)
-      .where(eq(medicines.userId, userId));
+      .where(eq(medicines.userId, userId))
+      .orderBy(desc(medicines.createdAt), medicines.id);
 
     if (userMedicines.length === 0) {
       return c.json([]);
