@@ -20,8 +20,7 @@ export const listMedicines = new Hono<MedicinesEnv>().get(
     const { today } = c.req.valid("query");
     const db = createDbClient(c.env.DATABASE_URL);
 
-    //TODO: medsという命名わかりにくい。省略しない方がよいかも
-    const meds = await db
+    const userMedicines = await db
       .select({
         id: medicines.id,
         name: medicines.name,
@@ -30,11 +29,10 @@ export const listMedicines = new Hono<MedicinesEnv>().get(
       .from(medicines)
       .where(eq(medicines.userId, userId));
 
-    if (meds.length === 0) {
+    if (userMedicines.length === 0) {
       return c.json([]);
     }
-    //TODO: ここもmだとわかりにくい。medicineとかにした方が良いかも
-    const medicineIds = meds.map((m) => m.id);
+    const medicineIds = userMedicines.map((medicine) => medicine.id);
 
     const timings = await db
       .select({ medicineId: medicineTimings.medicineId, timing: medicineTimings.timing })
@@ -50,11 +48,11 @@ export const listMedicines = new Hono<MedicinesEnv>().get(
 
     if (today !== "true") {
       return c.json(
-        meds.map((m) => ({
-          id: m.id,
-          name: m.name,
-          photo_url: m.photoUrl,
-          timings: timingsByMedicine.get(m.id) ?? [],
+        userMedicines.map((medicine) => ({
+          id: medicine.id,
+          name: medicine.name,
+          photo_url: medicine.photoUrl,
+          timings: timingsByMedicine.get(medicine.id) ?? [],
         })),
       );
     }
@@ -94,12 +92,12 @@ export const listMedicines = new Hono<MedicinesEnv>().get(
     }
 
     return c.json(
-      meds.map((m) => ({
-        id: m.id,
-        name: m.name,
-        photo_url: m.photoUrl,
-        timings: timingsByMedicine.get(m.id) ?? [],
-        today_logs: todayLogsByMedicine.get(m.id) ?? {},
+      userMedicines.map((medicine) => ({
+        id: medicine.id,
+        name: medicine.name,
+        photo_url: medicine.photoUrl,
+        timings: timingsByMedicine.get(medicine.id) ?? [],
+        today_logs: todayLogsByMedicine.get(medicine.id) ?? {},
       })),
     );
   },
