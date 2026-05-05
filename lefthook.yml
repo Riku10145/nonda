@@ -2,7 +2,7 @@ pre-commit:
   jobs:
     - name: web-fmt
       root: apps/web
-      glob: "*.{js,ts,jsx,tsx,css}"
+      glob: "*.{js,ts,jsx,tsx,css,md}"
       run: pnpm exec oxfmt {staged_files}
       stage_fixed: true
 
@@ -13,7 +13,7 @@ pre-commit:
 
     - name: api-fmt
       root: apps/api
-      glob: "*.{js,ts}"
+      glob: "*.{js,ts,md}"
       run: pnpm exec oxfmt {staged_files}
       stage_fixed: true
 
