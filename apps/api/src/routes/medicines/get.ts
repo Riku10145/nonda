@@ -2,19 +2,19 @@ import { sValidator } from "@hono/standard-validator";
 import { Hono } from "hono";
 
 import { createDbClient } from "../../db/client.js";
-import { FindMedicineParamSchema } from "../../schemas/medicines/index.js";
-import { findMedicineById } from "../../services/medicines/index.js";
+import { GetMedicineParamSchema } from "../../schemas/medicines/index.js";
+import { getMedicineById } from "../../services/medicines/index.js";
 import type { AppEnv } from "../../types/index.js";
 
-export const findMedicineRoute = new Hono<AppEnv>().get(
+export const getMedicineRoute = new Hono<AppEnv>().get(
   "/:id",
-  sValidator("param", FindMedicineParamSchema),
+  sValidator("param", GetMedicineParamSchema),
   async (c) => {
     const userId = c.get("userId");
     const { id: medicineId } = c.req.valid("param");
 
     const db = createDbClient(c.env.DATABASE_URL);
-    const medicine = await findMedicineById(db, { userId, medicineId });
+    const medicine = await getMedicineById(db, { userId, medicineId });
 
     if (!medicine) {
       return c.json({ error: { code: "NOT_FOUND", message: "指定された薬が見つかりません" } }, 404);

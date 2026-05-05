@@ -19,7 +19,7 @@ export interface MedicineDetail {
  * @param params 取得対象の medicineId と所有 userId
  * @returns 該当薬（タイミング込み）、無ければ null
  */
-export const findMedicineById = async (
+export const getMedicineById = async (
   db: Db,
   params: { userId: string; medicineId: string },
 ): Promise<MedicineDetail | null> => {

@@ -1,5 +1,5 @@
 export { createMedicine, type CreatedMedicine, type CreateMedicineParams } from "./create.js";
-export { findMedicineById, type MedicineDetail } from "./find.js";
+export { getMedicineById, type MedicineDetail } from "./get.js";
 export {
   listMedicines,
   listMedicinesWithTodayLogs,
