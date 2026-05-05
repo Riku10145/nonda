@@ -1,10 +1,11 @@
 import { Hono } from "hono";
 
-import { createMedicine } from "./create.js";
-import { listMedicines } from "./list.js";
-import { type MedicinesEnv, UUID_REGEX } from "./_shared.js";
+import type { AppEnv } from "../../types/index.js";
+import { UUID_REGEX } from "../../utils/uuid.js";
+import { createMedicineRoute } from "./create.js";
+import { listMedicinesRoute } from "./list.js";
 
-export const medicinesRoute = new Hono<MedicinesEnv>();
+export const medicinesRoute = new Hono<AppEnv>();
 
 // 認証スタブ: x-user-id ヘッダで userId を受け取る。本番では Auth.js セッション検証に差し替える。
 //Todo: ブラウザから叩く前に index.ts の CORS allowHeaders に x-user-id を追加する（現状は Bruno など非ブラウザのみ動作）
@@ -17,5 +18,5 @@ medicinesRoute.use("*", async (c, next) => {
   await next();
 });
 
-medicinesRoute.route("/", listMedicines);
-medicinesRoute.route("/", createMedicine);
+medicinesRoute.route("/", listMedicinesRoute);
+medicinesRoute.route("/", createMedicineRoute);
