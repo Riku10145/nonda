@@ -2,12 +2,9 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { trimTrailingSlash } from "hono/trailing-slash";
-import { routes } from "./routes/index.js";
 
-type Bindings = {
-  DATABASE_URL: string;
-  FRONTEND_URL: string;
-};
+import { routes } from "./routes/index.js";
+import type { Bindings } from "./types/index.js";
 
 const REQUIRED_ENV_KEYS = ["DATABASE_URL", "FRONTEND_URL"] as const satisfies ReadonlyArray<
   keyof Bindings

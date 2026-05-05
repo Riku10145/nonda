@@ -1,11 +1,7 @@
 import { Hono } from "hono";
 
+import type { Bindings } from "../types/index.js";
 import { medicinesRoute } from "./medicines/index.js";
-
-type Bindings = {
-  DATABASE_URL: string;
-  FRONTEND_URL: string;
-};
 
 export const routes = new Hono<{ Bindings: Bindings }>();
 
