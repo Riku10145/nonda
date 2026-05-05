@@ -1,0 +1,27 @@
+meta {
+  name: Find medicine
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/api/v1/medicines/{{medicineId}}
+  body: none
+  auth: none
+}
+
+headers {
+  x-user-id: {{devUserId}}
+}
+
+tests {
+  test("status is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  test("returns id", function() {
+    expect(res.getBody().id).to.be.a("string");
+  });
+  test("returns timings array", function() {
+    expect(res.getBody().timings).to.be.an("array");
+  });
+}
