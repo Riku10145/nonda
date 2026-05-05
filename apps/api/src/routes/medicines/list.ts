@@ -1,5 +1,5 @@
 import { sValidator } from "@hono/standard-validator";
-import { and, between, desc, eq, inArray } from "drizzle-orm";
+import { and, desc, eq, gte, inArray, lt } from "drizzle-orm";
 import { Hono } from "hono";
 import * as v from "valibot";
 
@@ -72,7 +72,8 @@ export const listMedicines = new Hono<MedicinesEnv>().get(
       .where(
         and(
           inArray(medicationLogs.medicineId, medicineIds),
-          between(medicationLogs.recordedAt, start, end),
+          gte(medicationLogs.recordedAt, start),
+          lt(medicationLogs.recordedAt, end),
         ),
       )
       .orderBy(desc(medicationLogs.recordedAt));
