@@ -1,0 +1,37 @@
+meta {
+  name: Update medication-log
+  type: http
+  seq: 3
+}
+
+patch {
+  url: {{baseUrl}}/api/v1/medication-logs/{{medicationLogId}}
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  x-user-id: {{devUserId}}
+}
+
+body:json {
+  {
+    "is_taken": false
+  }
+}
+
+tests {
+  test("status is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  test("returns id", function() {
+    expect(res.getBody().id).to.be.a("string");
+  });
+  test("returns is_taken", function() {
+    expect(res.getBody().is_taken).to.be.a("boolean");
+  });
+  test("returns updated_at", function() {
+    expect(res.getBody().updated_at).to.be.a("string");
+  });
+}
