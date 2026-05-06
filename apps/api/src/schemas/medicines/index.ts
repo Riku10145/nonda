@@ -3,3 +3,9 @@ export { DeleteMedicineParamSchema, type DeleteMedicineParam } from "./delete.js
 export { GetMedicineParamSchema, type GetMedicineParam } from "./get.js";
 export { ListMedicinesQuerySchema, type ListMedicinesQuery } from "./list.js";
 export { TimingSchema, type Timing } from "./timing.js";
+export {
+  UpdateMedicineParamSchema,
+  UpdateMedicineSchema,
+  type UpdateMedicineInput,
+  type UpdateMedicineParam,
+} from "./update.js";
