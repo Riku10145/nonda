@@ -31,7 +31,7 @@ bruno/            - Bruno API クライアント定義
 
 ```bash
 pnpm dev          # localhost:8787 (doppler run -- wrangler dev / Doppler CLI 必須)
-pnpm lint:oxlint  # Lint
+pnpm lint         # Lint (oxlint)
 pnpm fmt          # Format (自動修正)
 pnpm fmt:check    # Format チェックのみ
 ```
