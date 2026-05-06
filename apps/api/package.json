@@ -5,9 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "doppler run -- sh -c 'wrangler dev --var DATABASE_URL:$DATABASE_URL --var FRONTEND_URL:http://localhost:3000'",
-    "lint": "eslint src",
-    "lint:oxlint": "oxlint src",
-    "lint:oxlint:github": "oxlint --format=github src",
+    "lint": "oxlint src",
+    "lint:github": "oxlint --format=github src",
     "fmt": "oxfmt .",
     "fmt:check": "oxfmt --check .",
     "db:generate": "drizzle-kit generate",

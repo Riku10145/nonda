@@ -28,7 +28,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
 
       - name: Run oxlint
-        run: pnpm --filter ${{ matrix.package }} lint:oxlint:github
+        run: pnpm --filter ${{ matrix.package }} lint:github
 
   oxfmt:
     name: Format (${{ matrix.package }})
