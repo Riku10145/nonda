@@ -9,6 +9,7 @@
     "lint:github": "oxlint --format=github src",
     "fmt": "oxfmt .",
     "fmt:check": "oxfmt --check .",
+    "test": "vitest run",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "doppler run -- drizzle-kit migrate",
     "db:studio": "doppler run -- drizzle-kit studio"
@@ -28,6 +29,7 @@
     "oxfmt": "^0.47.0",
     "oxlint": "^1.62.0",
     "typescript": "^6",
+    "vitest": "^4.1.5",
     "wrangler": "^4.0.0"
   }
 }
