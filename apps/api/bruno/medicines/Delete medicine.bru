@@ -1,0 +1,24 @@
+meta {
+  name: Delete medicine
+  type: http
+  seq: 4
+}
+
+delete {
+  url: {{baseUrl}}/api/v1/medicines/{{medicineId}}
+  body: none
+  auth: none
+}
+
+headers {
+  x-user-id: {{devUserId}}
+}
+
+tests {
+  test("status is 204", function() {
+    expect(res.getStatus()).to.equal(204);
+  });
+  test("body is empty", function() {
+    expect(res.getBody()).to.be.empty;
+  });
+}
