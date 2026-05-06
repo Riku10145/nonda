@@ -1,0 +1,34 @@
+meta {
+  name: Update medicine
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{baseUrl}}/api/v1/medicines/{{medicineId}}
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  x-user-id: {{devUserId}}
+}
+
+body:json {
+  {
+    "name": "ロキソニン（更新）"
+  }
+}
+
+tests {
+  test("status is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  test("returns id", function() {
+    expect(res.getBody().id).to.be.a("string");
+  });
+  test("returns updated_at", function() {
+    expect(res.getBody().updated_at).to.be.a("string");
+  });
+}

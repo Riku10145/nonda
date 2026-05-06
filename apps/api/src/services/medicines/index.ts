@@ -8,3 +8,4 @@ export {
   type MedicineWithTodayLogs,
   type TodayLog,
 } from "./list.js";
+export { updateMedicine, type UpdatedMedicine, type UpdateMedicineParams } from "./update.js";
