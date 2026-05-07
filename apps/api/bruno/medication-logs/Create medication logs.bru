@@ -1,0 +1,38 @@
+meta {
+  name: Create medication logs
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/v1/medication-logs
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  x-user-id: {{devUserId}}
+}
+
+body:json {
+  {
+    "logs": [
+      {
+        "medicine_id": "00000000-0000-0000-0000-000000000000",
+        "timing": "morning",
+        "is_taken": true
+      }
+    ],
+    "recorded_at": "2026-05-06T00:00:00.000Z"
+  }
+}
+
+tests {
+  test("status is 201", function() {
+    expect(res.getStatus()).to.equal(201);
+  });
+  test("returns created count", function() {
+    expect(res.getBody().created).to.be.a("number");
+  });
+}
