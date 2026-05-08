@@ -2,7 +2,7 @@
 //Todo: ユーザーごとの timezone を持たせる場合はここを users.timezone 参照に差し替える。
 //Todo: タイムゾーン処理が増えたら date-fns-tz / Temporal などのライブラリ導入を検討する。
 
-const JST_OFFSET_MS = 9 * 60 * 60 * 1000;
+const _JST_OFFSET_MS = 9 * 60 * 60 * 1000;
 
 export const getJstTodayRange = (now: Date = new Date()): { start: Date; end: Date } => {
   const jstNow = new Date(now.getTime() + JST_OFFSET_MS);
