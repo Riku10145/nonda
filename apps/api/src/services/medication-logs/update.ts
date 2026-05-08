@@ -57,5 +57,9 @@ export const updateMedicationLog = async (
       updatedAt: medicationLogs.updatedAt,
     });
 
+  if (!updated) {
+    return { notFound: true };
+  }
+
   return { updated };
 };
