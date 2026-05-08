@@ -10,3 +10,9 @@ export {
   type MedicationLogGroup,
   type MedicationLogItem,
 } from "./list.js";
+export {
+  updateMedicationLog,
+  type UpdatedMedicationLog,
+  type UpdateMedicationLogParams,
+  type UpdateMedicationLogResult,
+} from "./update.js";
