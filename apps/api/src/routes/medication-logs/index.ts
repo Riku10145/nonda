@@ -3,6 +3,7 @@ import { Hono } from "hono";
 import type { AppEnv } from "../../types/index.js";
 import { UUID_REGEX } from "../../utils/uuid.js";
 import { createMedicationLogsRoute } from "./create.js";
+import { listMedicationLogsRoute } from "./list.js";
 
 export const medicationLogsRoute = new Hono<AppEnv>();
 
@@ -18,3 +19,4 @@ medicationLogsRoute.use("*", async (c, next) => {
 });
 
 medicationLogsRoute.route("/", createMedicationLogsRoute);
+medicationLogsRoute.route("/", listMedicationLogsRoute);

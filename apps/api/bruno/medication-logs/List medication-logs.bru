@@ -1,0 +1,29 @@
+meta {
+  name: List medication-logs
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/v1/medication-logs?from=2026-04-01&to=2026-05-06
+  body: none
+  auth: none
+}
+
+params:query {
+  from: 2026-04-01
+  to: 2026-05-06
+}
+
+headers {
+  x-user-id: {{devUserId}}
+}
+
+tests {
+  test("status is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  test("returns array", function() {
+    expect(res.getBody()).to.be.an("array");
+  });
+}
