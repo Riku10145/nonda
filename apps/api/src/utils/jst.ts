@@ -5,9 +5,9 @@
 const _JST_OFFSET_MS = 9 * 60 * 60 * 1000;
 
 export const getJstTodayRange = (now: Date = new Date()): { start: Date; end: Date } => {
-  const jstNow = new Date(now.getTime() + JST_OFFSET_MS);
+  const jstNow = new Date(now.getTime() + _JST_OFFSET_MS);
   const jstMidnight = Date.UTC(jstNow.getUTCFullYear(), jstNow.getUTCMonth(), jstNow.getUTCDate());
-  const start = new Date(jstMidnight - JST_OFFSET_MS);
+  const start = new Date(jstMidnight - _JST_OFFSET_MS);
   const end = new Date(start.getTime() + 24 * 60 * 60 * 1000);
   return { start, end };
 };
@@ -15,11 +15,11 @@ export const getJstTodayRange = (now: Date = new Date()): { start: Date; end: Da
 // "YYYY-MM-DD" (JST) を JST 0:00 の UTC Date に変換する。
 export const jstDateStringToUtc = (dateStr: string): Date => {
   const [y, m, d] = dateStr.split("-").map(Number);
-  return new Date(Date.UTC(y, m - 1, d) - JST_OFFSET_MS);
+  return new Date(Date.UTC(y, m - 1, d) - _JST_OFFSET_MS);
 };
 
 // UTC Date を JST 基準の "YYYY-MM-DD" に変換する。
 export const utcToJstDateString = (date: Date): string => {
-  const jst = new Date(date.getTime() + JST_OFFSET_MS);
+  const jst = new Date(date.getTime() + _JST_OFFSET_MS);
   return jst.toISOString().slice(0, 10);
 };
