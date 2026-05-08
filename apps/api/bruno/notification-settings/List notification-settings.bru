@@ -1,0 +1,39 @@
+meta {
+  name: List notification-settings
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/v1/notification-settings
+  body: none
+  auth: none
+}
+
+headers {
+  x-user-id: {{devUserId}}
+}
+
+tests {
+  test("status is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  test("returns array of length 3", function() {
+    const body = res.getBody();
+    expect(body).to.be.an("array");
+    expect(body.length).to.equal(3);
+  });
+  test("returns morning -> afternoon -> evening in order", function() {
+    const body = res.getBody();
+    expect(body[0].timing).to.equal("morning");
+    expect(body[1].timing).to.equal("afternoon");
+    expect(body[2].timing).to.equal("evening");
+  });
+  test("each item has notify_time and is_enabled", function() {
+    const body = res.getBody();
+    body.forEach(function(item) {
+      expect(item.notify_time).to.be.a("string");
+      expect(item.is_enabled).to.be.a("boolean");
+    });
+  });
+}
