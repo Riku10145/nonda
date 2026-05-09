@@ -1,0 +1,35 @@
+meta {
+  name: Update notification-settings
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{baseUrl}}/api/v1/notification-settings
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  x-user-id: {{devUserId}}
+}
+
+body:json {
+  [
+    { "timing": "morning",   "notify_time": "07:30", "is_enabled": true },
+    { "timing": "afternoon", "notify_time": "12:00", "is_enabled": false },
+    { "timing": "evening",   "notify_time": "21:00", "is_enabled": true }
+  ]
+}
+
+tests {
+  test("status is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  test("returns updated count", function() {
+    const body = res.getBody();
+    expect(body.updated).to.be.a("number");
+    expect(body.updated).to.equal(3);
+  });
+}
