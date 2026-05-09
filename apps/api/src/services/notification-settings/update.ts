@@ -19,8 +19,6 @@ export interface UpdateNotificationSettingsResult {
   updated: number;
 }
 
-const _excluded = (column: string) => sql.raw(`excluded."${column}"`);
-
 /**
  * 指定ユーザーの通知設定を timing 単位で upsert する。
  * 既存行があれば notify_time / is_enabled を更新し、無ければ新規作成する。
@@ -49,8 +47,8 @@ export const updateNotificationSettings = async (
     .onConflictDoUpdate({
       target: [notificationSettings.userId, notificationSettings.timing],
       set: {
-        notifyTime: _excluded("notify_time"),
-        isEnabled: _excluded("is_enabled"),
+        notifyTime: sql`excluded."notify_time"`,
+        isEnabled: sql`excluded."is_enabled"`,
         updatedAt: new Date(),
       },
     })
