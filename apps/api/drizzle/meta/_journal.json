@@ -29,6 +29,13 @@
       "when": 1777901815335,
       "tag": "0003_nifty_rattler",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1778380512500,
+      "tag": "0004_fuzzy_karma",
+      "breakpoints": true
     }
   ]
 }
