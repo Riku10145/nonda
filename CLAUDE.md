@@ -7,7 +7,7 @@
 ```
 apps/web        - Next.js 16 (App Router) フロントエンド (→ apps/web/CLAUDE.md)
 apps/api        - Hono / Cloudflare Workers バックエンド (→ apps/api/CLAUDE.md)
-packages/types  - 共通型定義
+packages/db     - 共通 DB スキーマ (Drizzle)。apps/api と apps/web の双方から参照
 ```
 
 各アプリの開発コマンド・規約は各 `CLAUDE.md` を参照。
