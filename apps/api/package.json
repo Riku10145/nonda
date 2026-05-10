@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "doppler run -- sh -c 'wrangler dev --var DATABASE_URL:$DATABASE_URL --var FRONTEND_URL:http://localhost:3000'",
+    "dev": "doppler run -- sh -c 'wrangler dev --var DATABASE_URL:$DATABASE_URL --var FRONTEND_URL:http://localhost:3000 --var AUTH_SECRET:$AUTH_SECRET'",
     "lint": "oxlint src",
     "lint:github": "oxlint --format=github src",
     "fmt": "oxfmt .",
@@ -21,6 +21,7 @@
     "@standard-schema/spec": "^1.1.0",
     "drizzle-orm": "^0.45.2",
     "hono": "^4.7.7",
+    "jose": "^6.2.3",
     "valibot": "^1.0.0"
   },
   "devDependencies": {
