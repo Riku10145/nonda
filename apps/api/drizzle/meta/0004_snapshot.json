@@ -97,12 +97,8 @@
           "name": "accounts_user_id_users_id_fk",
           "tableFrom": "accounts",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -110,10 +106,7 @@
       "compositePrimaryKeys": {
         "accounts_provider_provider_account_id_pk": {
           "name": "accounts_provider_provider_account_id_pk",
-          "columns": [
-            "provider",
-            "provider_account_id"
-          ]
+          "columns": ["provider", "provider_account_id"]
         }
       },
       "uniqueConstraints": {},
@@ -231,12 +224,8 @@
           "name": "medication_logs_medicine_id_medicines_id_fk",
           "tableFrom": "medication_logs",
           "tableTo": "medicines",
-          "columnsFrom": [
-            "medicine_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["medicine_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -292,12 +281,8 @@
           "name": "medicine_timings_medicine_id_medicines_id_fk",
           "tableFrom": "medicine_timings",
           "tableTo": "medicines",
-          "columnsFrom": [
-            "medicine_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["medicine_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -307,10 +292,7 @@
         "uq_medicine_timings_medicine_id_timing": {
           "name": "uq_medicine_timings_medicine_id_timing",
           "nullsNotDistinct": false,
-          "columns": [
-            "medicine_id",
-            "timing"
-          ]
+          "columns": ["medicine_id", "timing"]
         }
       },
       "policies": {},
@@ -383,12 +365,8 @@
           "name": "medicines_user_id_users_id_fk",
           "tableFrom": "medicines",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -457,12 +435,8 @@
           "name": "notification_settings_user_id_users_id_fk",
           "tableFrom": "notification_settings",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -472,10 +446,7 @@
         "uq_notification_settings_user_id_timing": {
           "name": "uq_notification_settings_user_id_timing",
           "nullsNotDistinct": false,
-          "columns": [
-            "user_id",
-            "timing"
-          ]
+          "columns": ["user_id", "timing"]
         }
       },
       "policies": {},
@@ -511,12 +482,8 @@
           "name": "sessions_user_id_users_id_fk",
           "tableFrom": "sessions",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -584,9 +551,7 @@
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       },
       "policies": {},
@@ -621,10 +586,7 @@
       "compositePrimaryKeys": {
         "verification_tokens_identifier_token_pk": {
           "name": "verification_tokens_identifier_token_pk",
-          "columns": [
-            "identifier",
-            "token"
-          ]
+          "columns": ["identifier", "token"]
         }
       },
       "uniqueConstraints": {},
@@ -637,11 +599,7 @@
     "public.timing_enum": {
       "name": "timing_enum",
       "schema": "public",
-      "values": [
-        "morning",
-        "afternoon",
-        "evening"
-      ]
+      "values": ["morning", "afternoon", "evening"]
     }
   },
   "schemas": {},
