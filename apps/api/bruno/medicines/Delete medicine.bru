@@ -10,10 +10,6 @@ delete {
   auth: none
 }
 
-headers {
-  x-user-id: {{devUserId}}
-}
-
 tests {
   test("status is 204", function() {
     expect(res.getStatus()).to.equal(204);

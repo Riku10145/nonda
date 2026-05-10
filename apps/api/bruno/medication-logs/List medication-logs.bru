@@ -15,10 +15,6 @@ params:query {
   to: 2026-05-06
 }
 
-headers {
-  x-user-id: {{devUserId}}
-}
-
 tests {
   test("status is 200", function() {
     expect(res.getStatus()).to.equal(200);

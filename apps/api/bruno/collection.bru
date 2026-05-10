@@ -1,0 +1,34 @@
+script:pre-request {
+  // Hono API は Authorization: Bearer <jwt> を要求する。
+  // env vars (devUserId, devAuthSecret) から HS256 で短命 JWT を組み立てて自動付与する。
+  // - devAuthSecret は Doppler dev の AUTH_SECRET と一致させること
+  // - devUserId は実在するユーザー (users.id) を指定すること
+
+  const crypto = require("crypto");
+  const userId = bru.getEnvVar("devUserId");
+  const secret = bru.getEnvVar("devAuthSecret");
+
+  if (!userId || !secret) {
+    throw new Error("devUserId / devAuthSecret env var is not set");
+  }
+
+  const b64url = (input) =>
+    Buffer.from(input)
+      .toString("base64")
+      .replace(/=+$/, "")
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_");
+
+  const header = { alg: "HS256", typ: "JWT" };
+  const payload = { sub: userId, exp: Math.floor(Date.now() / 1000) + 300 };
+  const signingInput = `${b64url(JSON.stringify(header))}.${b64url(JSON.stringify(payload))}`;
+  const signature = crypto
+    .createHmac("sha256", secret)
+    .update(signingInput)
+    .digest("base64")
+    .replace(/=+$/, "")
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_");
+
+  req.setHeader("Authorization", `Bearer ${signingInput}.${signature}`);
+}
