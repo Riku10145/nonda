@@ -2,6 +2,8 @@
 
 import { Button, Card } from "@heroui/react";
 import { signIn } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
 export default function LoginPage() {
   return (
@@ -12,17 +14,30 @@ export default function LoginPage() {
           <Card.Description>薬の飲み忘れを防ぐ服用記録アプリ</Card.Description>
         </Card.Header>
         <Card.Content>
-          <Button
-            className="w-full"
-            variant="tertiary"
-            onPress={() => signIn("google", { redirectTo: "/" })}
-          >
-            <GoogleIcon />
-            Google でログイン
-          </Button>
+          <Suspense fallback={<LoginButton callbackUrl="/" />}>
+            <LoginButtonWithCallback />
+          </Suspense>
         </Card.Content>
       </Card>
     </main>
+  );
+}
+
+function LoginButtonWithCallback() {
+  const callbackUrl = useSearchParams().get("callbackUrl") ?? "/";
+  return <LoginButton callbackUrl={callbackUrl} />;
+}
+
+function LoginButton({ callbackUrl }: { callbackUrl: string }) {
+  return (
+    <Button
+      className="w-full"
+      variant="tertiary"
+      onPress={() => signIn("google", { redirectTo: callbackUrl })}
+    >
+      <GoogleIcon />
+      Google でログイン
+    </Button>
   );
 }
 
