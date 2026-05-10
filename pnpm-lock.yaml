@@ -84,6 +84,9 @@ importers:
       drizzle-orm:
         specifier: ^0.45.2
         version: 0.45.2(@cloudflare/workers-types@4.20260501.1)(@neondatabase/serverless@1.1.0)
+      jose:
+        specifier: ^6.2.3
+        version: 6.2.3
       next:
         specifier: 16.2.4
         version: 16.2.4(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
