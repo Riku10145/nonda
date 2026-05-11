@@ -1,7 +1,8 @@
 import { Hono } from "hono";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { AppEnv, Bindings } from "../../types/index.js";
+import type { AppEnv } from "../../types/index.js";
+import { authHeader, testEnv } from "../../utils/_test-auth.js";
 
 const mockSelectWhere = vi.fn();
 
@@ -17,19 +18,18 @@ const { notificationSettingsRoute } = await import("./index.js");
 
 const userId = "87d8b9c6-00e8-42aa-ae8c-7d0e83aa2fb7";
 
-const env: Bindings = {
-  DATABASE_URL: "postgres://test",
-  FRONTEND_URL: "http://localhost:3000",
-};
-
 const buildApp = () => {
   const app = new Hono<AppEnv>();
   app.route("/v1/notification-settings", notificationSettingsRoute);
   return app;
 };
 
-const sendList = (headers: Record<string, string> = { "x-user-id": userId }) =>
-  buildApp().request("/v1/notification-settings", { method: "GET", headers }, env);
+const sendList = async (headers?: Record<string, string>) =>
+  buildApp().request(
+    "/v1/notification-settings",
+    { method: "GET", headers: headers ?? (await authHeader(userId)) },
+    testEnv,
+  );
 
 describe("GET /v1/notification-settings", () => {
   beforeEach(() => {
@@ -72,7 +72,7 @@ describe("GET /v1/notification-settings", () => {
     ]);
   });
 
-  it("returns 401 UNAUTHORIZED when x-user-id is missing", async () => {
+  it("returns 401 UNAUTHORIZED when Authorization header is missing", async () => {
     const res = await sendList({});
 
     expect(res.status).toBe(401);

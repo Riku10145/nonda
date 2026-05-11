@@ -6,9 +6,11 @@ import { trimTrailingSlash } from "hono/trailing-slash";
 import { routes } from "./routes/index.js";
 import type { Bindings } from "./types/index.js";
 
-const REQUIRED_ENV_KEYS = ["DATABASE_URL", "FRONTEND_URL"] as const satisfies ReadonlyArray<
-  keyof Bindings
->;
+const REQUIRED_ENV_KEYS = [
+  "DATABASE_URL",
+  "FRONTEND_URL",
+  "AUTH_SECRET",
+] as const satisfies ReadonlyArray<keyof Bindings>;
 
 const app = new Hono<{ Bindings: Bindings }>();
 

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "doppler run -- next dev",
     "build": "next build",
     "start": "next start",
     "lint": "oxlint",
@@ -12,9 +12,15 @@
     "fmt:check": "oxfmt --check ."
   },
   "dependencies": {
+    "@auth/drizzle-adapter": "^1.10.0",
     "@heroui/react": "^3.0.4",
     "@heroui/styles": "^3.0.4",
+    "@neondatabase/serverless": "^1.1.0",
+    "@nonda/db": "workspace:*",
+    "drizzle-orm": "^0.45.2",
+    "jose": "^6.2.3",
     "next": "16.2.4",
+    "next-auth": "5.0.0-beta.31",
     "react": "19.2.5",
     "react-dom": "19.2.5"
   },

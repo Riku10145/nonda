@@ -1,7 +1,8 @@
 import { Hono } from "hono";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { AppEnv, Bindings } from "../../types/index.js";
+import type { AppEnv } from "../../types/index.js";
+import { authHeader, testEnv } from "../../utils/_test-auth.js";
 
 const mockOrderBy = vi.fn();
 
@@ -21,25 +22,20 @@ const { medicationLogsRoute } = await import("./index.js");
 
 const userId = "87d8b9c6-00e8-42aa-ae8c-7d0e83aa2fb7";
 
-const env: Bindings = {
-  DATABASE_URL: "postgres://test",
-  FRONTEND_URL: "http://localhost:3000",
-};
-
 const buildApp = () => {
   const app = new Hono<AppEnv>();
   app.route("/v1/medication-logs", medicationLogsRoute);
   return app;
 };
 
-const sendList = (query: string) =>
+const sendList = async (query: string) =>
   buildApp().request(
     `/v1/medication-logs${query}`,
     {
       method: "GET",
-      headers: { "x-user-id": userId },
+      headers: await authHeader(userId),
     },
-    env,
+    testEnv,
   );
 
 describe("GET /v1/medication-logs", () => {

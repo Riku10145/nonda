@@ -10,7 +10,7 @@ nonda/
 │   ├── web/   # フロントエンド (Next.js)
 │   └── api/   # バックエンド (Hono)
 └── packages/
-    └── types/ # 共通型定義
+    └── db/    # 共通 DB スキーマ (Drizzle)
 ```
 
 ## 技術スタック

@@ -1,6 +1,7 @@
 export interface Bindings {
   DATABASE_URL: string;
   FRONTEND_URL: string;
+  AUTH_SECRET: string;
 }
 
 export interface Variables {

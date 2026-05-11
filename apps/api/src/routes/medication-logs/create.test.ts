@@ -1,7 +1,8 @@
 import { Hono } from "hono";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { AppEnv, Bindings } from "../../types/index.js";
+import type { AppEnv } from "../../types/index.js";
+import { authHeader, testEnv } from "../../utils/_test-auth.js";
 
 const mockSelectWhere = vi.fn();
 const mockInsertValues = vi.fn();
@@ -18,26 +19,21 @@ const { medicationLogsRoute } = await import("./index.js");
 const userId = "87d8b9c6-00e8-42aa-ae8c-7d0e83aa2fb7";
 const medicineId = "11111111-1111-1111-1111-111111111111";
 
-const env: Bindings = {
-  DATABASE_URL: "postgres://test",
-  FRONTEND_URL: "http://localhost:3000",
-};
-
 const buildApp = () => {
   const app = new Hono<AppEnv>();
   app.route("/v1/medication-logs", medicationLogsRoute);
   return app;
 };
 
-const sendCreate = (body: unknown) =>
+const sendCreate = async (body: unknown) =>
   buildApp().request(
     "/v1/medication-logs",
     {
       method: "POST",
-      headers: { "Content-Type": "application/json", "x-user-id": userId },
+      headers: { "Content-Type": "application/json", ...(await authHeader(userId)) },
       body: JSON.stringify(body),
     },
-    env,
+    testEnv,
   );
 
 describe("POST /v1/medication-logs", () => {

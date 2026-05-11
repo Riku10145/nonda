@@ -12,7 +12,7 @@ src/
   routes/         - HTTP ハンドラ (薄く保ち、検証と業務ロジックは下位層へ委譲)
   schemas/        - 入出力スキーマ (valibot) ※未分離
   services/       - 業務ロジック / DB アクセス ※未分離
-  db/             - Drizzle スキーマとクライアント (schema.ts, client.ts)
+  db/             - Drizzle クライアント (client.ts) と @nonda/db からの re-export (schema.ts)
   utils/          - 横断ユーティリティ (jst.ts など)
   types/          - 共通型 ※未分離
 drizzle/          - 生成済みマイグレーション SQL
@@ -45,7 +45,7 @@ pnpm db:studio    # Drizzle Studio
 ```
 
 - スキーマ変更時は `db:generate` → `drizzle/` の差分を確認 → コミット → `db:migrate`。
-- 直接 SQL を書かず、`src/db/schema.ts` を起点にする。
+- 直接 SQL を書かず、`packages/db/src/schema.ts` を起点にする（apps/web からも参照される共有スキーマ）。
 
 ## コード規約
 
