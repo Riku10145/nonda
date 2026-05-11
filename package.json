@@ -11,9 +11,15 @@
   "license": "ISC",
   "packageManager": "pnpm@10.33.2",
   "pnpm": {
-    "onlyBuiltDependencies": ["esbuild", "lefthook", "workerd"]
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "lefthook",
+      "workerd"
+    ]
   },
   "devDependencies": {
-    "lefthook": "^2.1.6"
+    "lefthook": "^2.1.6",
+    "playwright": "^1.59.1",
+    "tsx": "^4.21.0"
   }
 }
