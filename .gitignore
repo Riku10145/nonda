@@ -143,4 +143,8 @@ vite.config.ts.timestamp-*
 .vite/
 
 # Claude
-.claude
+.claude/*
+!.claude/skills/
+
+# ui-demo skill output
+ui-demo-output/
