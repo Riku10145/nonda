@@ -1,0 +1,696 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>nonda 認証の仕組み</title>
+    <style>
+      :root {
+        --fg: #1a1a1a;
+        --muted: #555;
+        --bg: #fafafa;
+        --card: #fff;
+        --border: #e0e0e0;
+        --accent: #3b82f6;
+        --browser: #fef3c7;
+        --browser-b: #f59e0b;
+        --web: #dbeafe;
+        --web-b: #3b82f6;
+        --api: #dcfce7;
+        --api-b: #22c55e;
+        --db: #fce7f3;
+        --db-b: #ec4899;
+        --google: #fee2e2;
+        --google-b: #ef4444;
+        --code-bg: #f3f4f6;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        line-height: 1.7;
+        color: var(--fg);
+        background: var(--bg);
+        margin: 0;
+        padding: 24px;
+      }
+      main {
+        max-width: 860px;
+        margin: 0 auto;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: 1.8rem;
+      }
+      h2 {
+        margin: 40px 0 16px;
+        padding-bottom: 6px;
+        border-bottom: 2px solid var(--accent);
+        font-size: 1.3rem;
+      }
+      h3 {
+        margin: 24px 0 8px;
+        font-size: 1.05rem;
+      }
+      .lead {
+        color: var(--muted);
+        margin-bottom: 32px;
+      }
+      section {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 20px 24px;
+        margin-bottom: 16px;
+      }
+      code {
+        background: var(--code-bg);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.9em;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 12px 0;
+        font-size: 0.95em;
+      }
+      th, td {
+        text-align: left;
+        padding: 8px 12px;
+        border-bottom: 1px solid var(--border);
+      }
+      th {
+        background: var(--code-bg);
+        font-weight: 600;
+      }
+      ol, ul {
+        padding-left: 24px;
+      }
+      li {
+        margin: 6px 0;
+      }
+      .note {
+        background: #fef9c3;
+        border-left: 4px solid #eab308;
+        padding: 10px 14px;
+        border-radius: 4px;
+        margin: 12px 0;
+        font-size: 0.95em;
+      }
+
+      /* === actor boxes === */
+      .actors {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin: 16px 0;
+      }
+      .actor {
+        border-radius: 8px;
+        padding: 16px 12px;
+        text-align: center;
+        font-size: 0.9rem;
+      }
+      .actor .name {
+        font-weight: 700;
+        font-size: 1.05rem;
+        margin-bottom: 6px;
+      }
+      .actor .where {
+        color: var(--muted);
+        font-size: 0.82rem;
+        margin-bottom: 8px;
+      }
+      .a-browser { background: var(--browser); border: 2px solid var(--browser-b); }
+      .a-web { background: var(--web); border: 2px solid var(--web-b); }
+      .a-api { background: var(--api); border: 2px solid var(--api-b); }
+      .a-db { background: var(--db); border: 2px solid var(--db-b); }
+      .a-google { background: var(--google); border: 2px solid var(--google-b); }
+
+      /* === sequence diagram === */
+      .seq {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin: 16px 0;
+      }
+      .seq-step {
+        display: grid;
+        grid-template-columns: 36px 1fr;
+        gap: 12px;
+        align-items: start;
+        padding: 10px 14px;
+        border-radius: 6px;
+        background: #fafafa;
+        border: 1px solid var(--border);
+      }
+      .seq-num {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: var(--accent);
+        color: white;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.85rem;
+      }
+      .seq-body {
+        font-size: 0.94rem;
+      }
+      .seq-tag {
+        display: inline-block;
+        font-size: 0.72rem;
+        padding: 1px 8px;
+        border-radius: 10px;
+        margin-right: 8px;
+        font-weight: 600;
+      }
+      .tag-browser { background: var(--browser); border: 1px solid var(--browser-b); }
+      .tag-web { background: var(--web); border: 1px solid var(--web-b); }
+      .tag-api { background: var(--api); border: 1px solid var(--api-b); }
+      .tag-google { background: var(--google); border: 1px solid var(--google-b); }
+      .tag-db { background: var(--db); border: 1px solid var(--db-b); }
+
+      /* === jwt box === */
+      .jwt {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 8px;
+        margin: 16px 0;
+      }
+      .jwt-part {
+        border-radius: 6px;
+        padding: 12px;
+        text-align: center;
+      }
+      .jwt-part .h {
+        font-weight: 700;
+        margin-bottom: 4px;
+      }
+      .jwt-part .ex {
+        font-family: ui-monospace, monospace;
+        font-size: 0.78rem;
+        color: var(--muted);
+        word-break: break-all;
+      }
+      .jwt-1 { background: #fef3c7; border: 2px solid #f59e0b; }
+      .jwt-2 { background: #dbeafe; border: 2px solid #3b82f6; }
+      .jwt-3 { background: #fce7f3; border: 2px solid #ec4899; }
+      .jwt-sep {
+        text-align: center;
+        font-size: 1.4rem;
+        color: var(--muted);
+        margin: 4px 0;
+      }
+
+      /* === arch diagram === */
+      .arch {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin: 16px 0;
+      }
+      .arch-box {
+        border-radius: 8px;
+        padding: 14px;
+        border: 2px solid;
+      }
+      .arch-box h4 {
+        margin: 0 0 8px;
+        font-size: 0.95rem;
+      }
+      .arch-box ul {
+        margin: 0;
+        padding-left: 18px;
+        font-size: 0.85rem;
+      }
+
+      .legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 12px 0;
+      }
+      .legend span {
+        font-size: 0.8rem;
+        padding: 3px 10px;
+        border-radius: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>nonda 認証の仕組み</h1>
+      <p class="lead">Google ログイン + JWT による API 認証の流れを図解。</p>
+
+      <section>
+        <h2>1. 登場するもの</h2>
+        <div class="actors">
+          <div class="actor a-browser">
+            <div class="name">ブラウザ</div>
+            <div class="where">ユーザーの端末</div>
+            <div>画面表示<br />ログイン操作</div>
+          </div>
+          <div class="actor a-web">
+            <div class="name">Web</div>
+            <div class="where">Vercel (Next.js)</div>
+            <div>画面のサーバー<br />認証管理</div>
+          </div>
+          <div class="actor a-api">
+            <div class="name">API</div>
+            <div class="where">Cloudflare Workers (Hono)</div>
+            <div>DB 操作</div>
+          </div>
+        </div>
+        <div class="actors" style="grid-template-columns: repeat(2, 1fr);">
+          <div class="actor a-google">
+            <div class="name">Google</div>
+            <div class="where">外部 IdP</div>
+            <div>ログイン代行</div>
+          </div>
+          <div class="actor a-db">
+            <div class="name">DB</div>
+            <div class="where">Neon (PostgreSQL)</div>
+            <div>ユーザー / 薬データ保存</div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>2. 全体構成図</h2>
+        <svg viewBox="0 0 800 360" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: auto;">
+          <defs>
+            <marker id="arr" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+              <path d="M0,0 L9,3 L0,6 Z" fill="#555" />
+            </marker>
+          </defs>
+
+          <!-- Browser -->
+          <rect x="40" y="40" width="160" height="80" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" />
+          <text x="120" y="70" text-anchor="middle" font-weight="700" font-size="16">ブラウザ</text>
+          <text x="120" y="92" text-anchor="middle" font-size="12" fill="#555">画面 / Cookie</text>
+
+          <!-- Web -->
+          <rect x="320" y="40" width="160" height="80" rx="8" fill="#dbeafe" stroke="#3b82f6" stroke-width="2" />
+          <text x="400" y="70" text-anchor="middle" font-weight="700" font-size="16">Web (Vercel)</text>
+          <text x="400" y="92" text-anchor="middle" font-size="12" fill="#555">Next.js / Auth.js</text>
+
+          <!-- Google -->
+          <rect x="600" y="40" width="160" height="80" rx="8" fill="#fee2e2" stroke="#ef4444" stroke-width="2" />
+          <text x="680" y="70" text-anchor="middle" font-weight="700" font-size="16">Google</text>
+          <text x="680" y="92" text-anchor="middle" font-size="12" fill="#555">OIDC プロバイダ</text>
+
+          <!-- API -->
+          <rect x="320" y="220" width="160" height="80" rx="8" fill="#dcfce7" stroke="#22c55e" stroke-width="2" />
+          <text x="400" y="250" text-anchor="middle" font-weight="700" font-size="16">API (Workers)</text>
+          <text x="400" y="272" text-anchor="middle" font-size="12" fill="#555">Hono</text>
+
+          <!-- DB -->
+          <ellipse cx="680" cy="260" rx="80" ry="40" fill="#fce7f3" stroke="#ec4899" stroke-width="2" />
+          <text x="680" y="255" text-anchor="middle" font-weight="700" font-size="16">DB</text>
+          <text x="680" y="275" text-anchor="middle" font-size="12" fill="#555">Neon (PostgreSQL)</text>
+
+          <!-- Arrows -->
+          <!-- Browser <-> Web -->
+          <line x1="200" y1="80" x2="320" y2="80" stroke="#555" stroke-width="1.5" marker-end="url(#arr)" />
+          <text x="260" y="72" text-anchor="middle" font-size="11" fill="#555">HTTP / Cookie</text>
+
+          <!-- Web <-> Google -->
+          <line x1="480" y1="80" x2="600" y2="80" stroke="#555" stroke-width="1.5" marker-end="url(#arr)" />
+          <text x="540" y="72" text-anchor="middle" font-size="11" fill="#555">OIDC</text>
+
+          <!-- Web -> API -->
+          <line x1="400" y1="120" x2="400" y2="220" stroke="#555" stroke-width="1.5" marker-end="url(#arr)" />
+          <text x="408" y="170" font-size="11" fill="#555">Authorization: Bearer (JWT)</text>
+
+          <!-- Web -> DB -->
+          <line x1="480" y1="100" x2="610" y2="240" stroke="#555" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr)" />
+          <text x="565" y="155" font-size="11" fill="#555">Auth.js が書込</text>
+
+          <!-- API -> DB -->
+          <line x1="480" y1="260" x2="600" y2="260" stroke="#555" stroke-width="1.5" marker-end="url(#arr)" />
+          <text x="540" y="252" text-anchor="middle" font-size="11" fill="#555">SQL</text>
+        </svg>
+      </section>
+
+      <section>
+        <h2>3. OIDC とは</h2>
+        <p>
+          OIDC (OpenID Connect) は、<strong>「自分のアプリで認証処理をやらず、外部 (Google) に代行してもらう」</strong>仕組み。
+          パスワード管理を自前でやらなくて済む。
+        </p>
+
+        <h3>用語</h3>
+        <table>
+          <tr><th>用語</th><th>意味</th><th>nonda の場合</th></tr>
+          <tr><td>IdP</td><td>認証を担当する外部サービス</td><td>Google</td></tr>
+          <tr><td>RP (Relying Party)</td><td>IdP を利用するアプリ</td><td>nonda (Web)</td></tr>
+          <tr><td>Client ID</td><td>Google が RP に発行する公開 ID</td><td><code>AUTH_GOOGLE_ID</code></td></tr>
+          <tr><td>Client Secret</td><td>Google が RP に発行する秘密鍵</td><td><code>AUTH_GOOGLE_SECRET</code></td></tr>
+          <tr><td>Redirect URI</td><td>Google が認可後に戻す URL (事前登録)</td><td><code>/api/auth/callback/google</code></td></tr>
+          <tr><td>Scope</td><td>取得したい情報の種類</td><td><code>openid email profile</code></td></tr>
+          <tr><td>Authorization Code</td><td>Google が一時的に発行する引換券</td><td>URL の <code>?code=...</code></td></tr>
+          <tr><td>ID Token</td><td>ユーザー情報入りの JWT</td><td>email, name, picture, sub を含む</td></tr>
+          <tr><td>sub</td><td>IdP 側のユーザー一意 ID</td><td>Google アカウントの ID</td></tr>
+        </table>
+
+        <h3>処理フロー</h3>
+        <svg viewBox="0 0 800 460" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: auto;">
+          <defs>
+            <marker id="arr3" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+              <path d="M0,0 L9,3 L0,6 Z" fill="#555" />
+            </marker>
+          </defs>
+
+          <!-- swim lanes -->
+          <rect x="80" y="20" width="180" height="40" rx="6" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" />
+          <text x="170" y="45" text-anchor="middle" font-weight="700" font-size="14">ブラウザ</text>
+
+          <rect x="310" y="20" width="180" height="40" rx="6" fill="#dbeafe" stroke="#3b82f6" stroke-width="2" />
+          <text x="400" y="45" text-anchor="middle" font-weight="700" font-size="14">Web (nonda)</text>
+
+          <rect x="540" y="20" width="180" height="40" rx="6" fill="#fee2e2" stroke="#ef4444" stroke-width="2" />
+          <text x="630" y="45" text-anchor="middle" font-weight="700" font-size="14">Google</text>
+
+          <!-- vertical lifelines -->
+          <line x1="170" y1="60" x2="170" y2="440" stroke="#ccc" stroke-dasharray="4,4" />
+          <line x1="400" y1="60" x2="400" y2="440" stroke="#ccc" stroke-dasharray="4,4" />
+          <line x1="630" y1="60" x2="630" y2="440" stroke="#ccc" stroke-dasharray="4,4" />
+
+          <!-- step 1 -->
+          <line x1="170" y1="90" x2="400" y2="90" stroke="#555" stroke-width="1.5" marker-end="url(#arr3)" />
+          <text x="285" y="82" text-anchor="middle" font-size="11">① ログインボタン押下</text>
+
+          <!-- step 2 -->
+          <line x1="400" y1="125" x2="170" y2="125" stroke="#555" stroke-width="1.5" marker-end="url(#arr3)" />
+          <text x="285" y="117" text-anchor="middle" font-size="11">② Google へリダイレクト指示</text>
+          <text x="285" y="140" text-anchor="middle" font-size="10" fill="#555">(client_id, redirect_uri, scope)</text>
+
+          <!-- step 3 -->
+          <line x1="170" y1="170" x2="630" y2="170" stroke="#555" stroke-width="1.5" marker-end="url(#arr3)" />
+          <text x="400" y="162" text-anchor="middle" font-size="11">③ Google にアクセス (ユーザーが承認)</text>
+
+          <!-- step 4 -->
+          <line x1="630" y1="210" x2="170" y2="210" stroke="#555" stroke-width="1.5" marker-end="url(#arr3)" />
+          <text x="400" y="202" text-anchor="middle" font-size="11">④ Web にリダイレクト + authorization_code</text>
+
+          <!-- step 5 -->
+          <line x1="170" y1="245" x2="400" y2="245" stroke="#555" stroke-width="1.5" marker-end="url(#arr3)" />
+          <text x="285" y="237" text-anchor="middle" font-size="11">⑤ /callback/google に code を渡す</text>
+
+          <!-- step 6 -->
+          <line x1="400" y1="285" x2="630" y2="285" stroke="#555" stroke-width="1.5" marker-end="url(#arr3)" />
+          <text x="515" y="277" text-anchor="middle" font-size="11">⑥ code + client_secret を送信</text>
+
+          <!-- step 7 -->
+          <line x1="630" y1="320" x2="400" y2="320" stroke="#555" stroke-width="1.5" marker-end="url(#arr3)" />
+          <text x="515" y="312" text-anchor="middle" font-size="11">⑦ id_token を返す</text>
+          <text x="515" y="335" text-anchor="middle" font-size="10" fill="#555">(email, name, sub などを含む)</text>
+
+          <!-- step 8 -->
+          <rect x="320" y="355" width="160" height="40" rx="6" fill="#dbeafe" stroke="#3b82f6" />
+          <text x="400" y="378" text-anchor="middle" font-size="11">⑧ id_token を検証</text>
+
+          <!-- step 9 -->
+          <line x1="400" y1="420" x2="170" y2="420" stroke="#555" stroke-width="1.5" marker-end="url(#arr3)" />
+          <text x="285" y="412" text-anchor="middle" font-size="11">⑨ Cookie をセット + ホームへ</text>
+        </svg>
+
+        <h3>nonda 側の準備（事前作業）</h3>
+        <ol>
+          <li>GCP で OAuth クライアントを作成 → <code>AUTH_GOOGLE_ID</code> と <code>AUTH_GOOGLE_SECRET</code> を取得</li>
+          <li>承認済みリダイレクト URI に <code>{オリジン}/api/auth/callback/google</code> を登録</li>
+          <li>取得した ID / Secret を Doppler に保存</li>
+        </ol>
+
+        <h3>なぜ Authorization Code を経由するか</h3>
+        <ul>
+          <li>id_token を直接ブラウザに渡すと、URL から盗まれる可能性がある</li>
+          <li>code はブラウザを経由するが、id_token と引き換えるには <strong>client_secret も必要</strong> (Web サーバーしか持っていない)</li>
+          <li>code が漏れても client_secret なしでは id_token を取れない → 安全</li>
+        </ul>
+
+        <h3>nonda での実装</h3>
+        <ul>
+          <li><strong>③〜⑧</strong> の処理は <strong>Auth.js が全部やってくれる</strong></li>
+          <li>アプリ側のコードは「<code>signIn("google")</code> を呼ぶ」「<code>auth()</code> でセッション取得」程度</li>
+          <li>取得した id_token の <code>sub</code> や <code>email</code> をもとに、<code>users</code> / <code>accounts</code> テーブルに保存（DrizzleAdapter が担当）</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>4. ログイン処理の流れ</h2>
+        <div class="seq">
+          <div class="seq-step">
+            <div class="seq-num">1</div>
+            <div class="seq-body">
+              <span class="seq-tag tag-browser">ブラウザ</span>
+              <code>/login</code> で「Google でログイン」ボタンを押す
+            </div>
+          </div>
+          <div class="seq-step">
+            <div class="seq-num">2</div>
+            <div class="seq-body">
+              <span class="seq-tag tag-web">Web</span>
+              <span class="seq-tag tag-google">→ Google</span>
+              Auth.js が Google ログイン画面へリダイレクト
+            </div>
+          </div>
+          <div class="seq-step">
+            <div class="seq-num">3</div>
+            <div class="seq-body">
+              <span class="seq-tag tag-google">Google</span>
+              ユーザーが承認 → Web の <code>/api/auth/callback/google</code> に戻す
+            </div>
+          </div>
+          <div class="seq-step">
+            <div class="seq-num">4</div>
+            <div class="seq-body">
+              <span class="seq-tag tag-web">Web</span>
+              <span class="seq-tag tag-db">→ DB</span>
+              users / accounts レコードを作成（初回ログインのみ）
+            </div>
+          </div>
+          <div class="seq-step">
+            <div class="seq-num">5</div>
+            <div class="seq-body">
+              <span class="seq-tag tag-web">Web</span>
+              <span class="seq-tag tag-browser">→ ブラウザ</span>
+              セッショントークンを Cookie に保存
+            </div>
+          </div>
+          <div class="seq-step">
+            <div class="seq-num">6</div>
+            <div class="seq-body">
+              <span class="seq-tag tag-browser">ブラウザ</span>
+              <code>/</code> へリダイレクト → ホーム画面表示
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>5. API を呼ぶ流れ</h2>
+        <div class="seq">
+          <div class="seq-step">
+            <div class="seq-num">1</div>
+            <div class="seq-body">
+              <span class="seq-tag tag-browser">ブラウザ</span>
+              ユーザーがページを開く
+            </div>
+          </div>
+          <div class="seq-step">
+            <div class="seq-num">2</div>
+            <div class="seq-body">
+              <span class="seq-tag tag-web">Web</span>
+              Cookie から userId を取得（<code>auth()</code> 関数）
+            </div>
+          </div>
+          <div class="seq-step">
+            <div class="seq-num">3</div>
+            <div class="seq-body">
+              <span class="seq-tag tag-web">Web</span>
+              JWT を発行（<code>sub: userId</code>, 5 分有効, <code>AUTH_SECRET</code> で署名）
+            </div>
+          </div>
+          <div class="seq-step">
+            <div class="seq-num">4</div>
+            <div class="seq-body">
+              <span class="seq-tag tag-web">Web</span>
+              <span class="seq-tag tag-api">→ API</span>
+              <code>Authorization: Bearer &lt;jwt&gt;</code> を付けて fetch
+            </div>
+          </div>
+          <div class="seq-step">
+            <div class="seq-num">5</div>
+            <div class="seq-body">
+              <span class="seq-tag tag-api">API</span>
+              ヘッダから JWT を取り出して <code>AUTH_SECRET</code> で署名を検証
+            </div>
+          </div>
+          <div class="seq-step">
+            <div class="seq-num">6</div>
+            <div class="seq-body">
+              <span class="seq-tag tag-api">API</span>
+              <span class="seq-tag tag-db">→ DB</span>
+              <code>payload.sub</code> から userId を取り、SQL 実行
+            </div>
+          </div>
+          <div class="seq-step">
+            <div class="seq-num">7</div>
+            <div class="seq-body">
+              <span class="seq-tag tag-api">API</span>
+              <span class="seq-tag tag-web">→ Web</span>
+              <span class="seq-tag tag-browser">→ ブラウザ</span>
+              結果を返す
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>6. なぜ Cookie ではなく JWT を発行するか</h2>
+        <ul>
+          <li>Web と API は別ドメインなので、Cookie は API には自動送信されない</li>
+          <li>API 側は短い文字列を検証するだけで済む</li>
+          <li>JWT を短命 (5 分) にすることで、漏洩時のリスクを抑えられる</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>7. JWT の構造</h2>
+        <div class="jwt">
+          <div class="jwt-part jwt-1">
+            <div class="h">Header</div>
+            <div>署名アルゴリズム</div>
+            <div class="ex">{"alg":"HS256","typ":"JWT"}</div>
+          </div>
+          <div class="jwt-part jwt-2">
+            <div class="h">Payload</div>
+            <div>データ</div>
+            <div class="ex">{"sub":"uuid","exp":12345}</div>
+          </div>
+          <div class="jwt-part jwt-3">
+            <div class="h">Signature</div>
+            <div>署名</div>
+            <div class="ex">HMAC-SHA256(Header + Payload, AUTH_SECRET)</div>
+          </div>
+        </div>
+        <div class="jwt-sep">↓ <code>.</code> でつないで 1 つの文字列</div>
+        <div style="font-family: ui-monospace, monospace; font-size: 0.85rem; background: #f3f4f6; padding: 10px; border-radius: 4px; word-break: break-all; text-align: center;">
+          <span style="color: #f59e0b;">eyJhbGc...</span>.<span style="color: #3b82f6;">eyJzdWI...</span>.<span style="color: #ec4899;">a1b2c3...</span>
+        </div>
+        <p style="margin-top: 12px;"><code>AUTH_SECRET</code> を知らない人は正しい Signature を作れない。改ざんすると検証で弾かれる。</p>
+      </section>
+
+      <section>
+        <h2>8. AUTH_SECRET の流れ</h2>
+        <svg viewBox="0 0 800 240" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: auto;">
+          <defs>
+            <marker id="arr2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+              <path d="M0,0 L9,3 L0,6 Z" fill="#555" />
+            </marker>
+          </defs>
+
+          <!-- Doppler -->
+          <rect x="320" y="20" width="160" height="60" rx="8" fill="#e0e7ff" stroke="#6366f1" stroke-width="2" />
+          <text x="400" y="48" text-anchor="middle" font-weight="700" font-size="15">Doppler</text>
+          <text x="400" y="68" text-anchor="middle" font-size="12" fill="#555">AUTH_SECRET 唯一の保管</text>
+
+          <!-- Vercel -->
+          <rect x="80" y="140" width="200" height="60" rx="8" fill="#dbeafe" stroke="#3b82f6" stroke-width="2" />
+          <text x="180" y="168" text-anchor="middle" font-weight="700" font-size="15">Web (Vercel)</text>
+          <text x="180" y="188" text-anchor="middle" font-size="12" fill="#555">JWT を発行</text>
+
+          <!-- Workers -->
+          <rect x="520" y="140" width="200" height="60" rx="8" fill="#dcfce7" stroke="#22c55e" stroke-width="2" />
+          <text x="620" y="168" text-anchor="middle" font-weight="700" font-size="15">API (Workers)</text>
+          <text x="620" y="188" text-anchor="middle" font-size="12" fill="#555">JWT を検証</text>
+
+          <!-- Arrows -->
+          <line x1="350" y1="80" x2="200" y2="140" stroke="#555" stroke-width="1.5" marker-end="url(#arr2)" />
+          <text x="240" y="115" font-size="11" fill="#555">自動同期</text>
+
+          <line x1="450" y1="80" x2="600" y2="140" stroke="#555" stroke-width="1.5" marker-end="url(#arr2)" />
+          <text x="540" y="115" font-size="11" fill="#555">GitHub Actions</text>
+
+          <line x1="280" y1="170" x2="520" y2="170" stroke="#3b82f6" stroke-width="2" />
+          <text x="400" y="160" text-anchor="middle" font-size="12" fill="#3b82f6" font-weight="600">同じ AUTH_SECRET</text>
+          <text x="400" y="190" text-anchor="middle" font-size="11" fill="#555">→ Web が作った JWT を API が検証可能</text>
+        </svg>
+      </section>
+
+      <section>
+        <h2>9. DB のテーブル</h2>
+        <table>
+          <tr><th>テーブル</th><th>役割</th></tr>
+          <tr><td><code>users</code></td><td>ユーザー基本情報 (id, email, name, image)</td></tr>
+          <tr><td><code>accounts</code></td><td>OIDC プロバイダ (Google) との紐付け情報</td></tr>
+          <tr><td><code>sessions</code></td><td>JWT 戦略では未使用 (Adapter 仕様で用意)</td></tr>
+          <tr><td><code>verification_tokens</code></td><td>同上</td></tr>
+        </table>
+      </section>
+
+      <section>
+        <h2>10. 主なファイル</h2>
+        <div class="arch">
+          <div class="arch-box" style="background: var(--web); border-color: var(--web-b);">
+            <h4>Web (apps/web)</h4>
+            <ul>
+              <li><code>auth.config.ts</code> — Auth.js 共通設定</li>
+              <li><code>auth.ts</code> — DB Adapter 込みの設定</li>
+              <li><code>proxy.ts</code> — 未ログインを <code>/login</code> へリダイレクト</li>
+              <li><code>app/api/auth/[...nextauth]/route.ts</code> — Auth.js エンドポイント</li>
+              <li><code>app/login/page.tsx</code> — ログイン画面</li>
+              <li><code>lib/api-jwt.ts</code> — JWT 発行</li>
+              <li><code>lib/api-client.ts</code> — fetch ラッパー</li>
+              <li><code>lib/db.ts</code> — Drizzle クライアント</li>
+            </ul>
+          </div>
+          <div class="arch-box" style="background: var(--api); border-color: var(--api-b);">
+            <h4>API (apps/api)</h4>
+            <ul>
+              <li><code>utils/auth.ts</code> — JWT 検証ミドルウェア</li>
+              <li><code>routes/*/index.ts</code> — 各ルートに認証適用</li>
+            </ul>
+          </div>
+        </div>
+        <div class="arch-box" style="background: #f3f4f6; border-color: #9ca3af; margin-top: 12px;">
+          <h4>共有 (packages/db)</h4>
+          <ul>
+            <li><code>src/schema.ts</code> — DB スキーマ定義 (Web/API 両方で参照)</li>
+          </ul>
+        </div>
+      </section>
+
+      <section>
+        <h2>11. 環境変数の配置</h2>
+        <table>
+          <tr><th>変数</th><th>Web</th><th>API</th><th>用途</th></tr>
+          <tr><td><code>DATABASE_URL</code></td><td>✅</td><td>✅</td><td>DB 接続</td></tr>
+          <tr><td><code>AUTH_SECRET</code></td><td>✅</td><td>✅</td><td>JWT 署名・検証</td></tr>
+          <tr><td><code>AUTH_GOOGLE_ID</code></td><td>✅</td><td>-</td><td>Google OAuth</td></tr>
+          <tr><td><code>AUTH_GOOGLE_SECRET</code></td><td>✅</td><td>-</td><td>Google OAuth</td></tr>
+          <tr><td><code>API_URL</code></td><td>✅</td><td>-</td><td>Web → API の宛先</td></tr>
+          <tr><td><code>FRONTEND_URL</code></td><td>-</td><td>✅</td><td>CORS 許可</td></tr>
+        </table>
+      </section>
+
+      <section>
+        <h2>12. よくある誤解</h2>
+        <ul>
+          <li><strong>Auth.js の Cookie をそのまま API に送ればよい</strong>
+            <br />→ 別ドメインなので Cookie は API に届かない。Web で JWT に変換する。</li>
+          <li><strong>API も Auth.js を使えばよい</strong>
+            <br />→ Auth.js は Next.js 向け。API では JWT 検証だけ自前で行う。</li>
+          <li><strong>JWT は暗号化されている</strong>
+            <br />→ HS256 は<em>署名のみ</em>。Payload は base64 デコードすれば誰でも読める。秘密情報は入れない。</li>
+        </ul>
+      </section>
+    </main>
+  </body>
+</html>
