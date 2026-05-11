@@ -45,7 +45,9 @@ async function main() {
 
   const loginUrl = "http://localhost:3000/login";
   assertSafeUrl(loginUrl);
-  await page.goto(loginUrl, { waitUntil: "networkidle" });
+  await page.goto(loginUrl, { waitUntil: "domcontentloaded", timeout: 60_000 });
+  // networkidle は Next.js dev の HMR で永遠に来ないことがあるのでフォールバック扱い
+  await page.waitForLoadState("networkidle", { timeout: 10_000 }).catch(() => {});
   await page.screenshot({ path: join(SHOTS, "login.png"), fullPage: true });
 
   // 例: フォーム入力 → 送信
@@ -77,7 +79,7 @@ npx tsx ui-demo-output/_run.ts
 ## よくあるハマり
 
 - **動画が 0 バイト**: `context.close()` 前に `page.close()` していない。順序を守る。
-- **`networkidle` で固まる**: SSE / WebSocket があると永遠に idle にならない。`domcontentloaded` + 明示的な `waitForSelector` に切り替える。
+- **`networkidle` で固まる**: Next.js dev の HMR / SSE / WebSocket があると永遠に idle にならない。テンプレ通り `domcontentloaded` をプライマリにし、`networkidle` は `catch(() => {})` で短いタイムアウトのフォールバックにする（実測で動作確認済み）。
 - **Next.js の初回ビルドで遅い**: `goto` のタイムアウトを 60s 程度に伸ばす（`{ timeout: 60_000 }`）。
 - **dev サーバが落ちている**: スクリプト先頭で `fetch("http://localhost:3000")` して死活確認するのも手。
 
