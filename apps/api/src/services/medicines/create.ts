@@ -6,14 +6,12 @@ export interface CreateMedicineParams {
   userId: string;
   name: string;
   timings: Timing[];
-  photoUrl: string | null;
 }
 
 export interface CreatedMedicine {
   id: string;
   name: string;
   timings: Timing[];
-  photoUrl: string | null;
   createdAt: Date;
 }
 
@@ -37,7 +35,6 @@ export const createMedicine = async (
         id: medicineId,
         userId: params.userId,
         name: params.name,
-        photoUrl: params.photoUrl,
       })
       .returning(),
     db.insert(medicineTimings).values(
@@ -52,7 +49,6 @@ export const createMedicine = async (
     id: inserted.id,
     name: inserted.name,
     timings: uniqueTimings,
-    photoUrl: inserted.photoUrl,
     createdAt: inserted.createdAt,
   };
 };

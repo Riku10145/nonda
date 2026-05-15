@@ -15,11 +15,9 @@ export const UpdateMedicineSchema = v.pipe(
   v.object({
     name: v.optional(v.pipe(v.string(), v.trim(), v.minLength(1), v.maxLength(255))),
     timings: v.optional(v.pipe(v.array(TimingSchema), v.minLength(1))),
-    photo_url: v.optional(v.nullable(v.pipe(v.string(), v.url()))),
   }),
   v.check(
-    (input) =>
-      input.name !== undefined || input.timings !== undefined || input.photo_url !== undefined,
+    (input) => input.name !== undefined || input.timings !== undefined,
     "更新するフィールドを少なくとも1つ指定してください",
   ),
 );

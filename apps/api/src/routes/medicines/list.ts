@@ -20,7 +20,6 @@ export const listMedicinesRoute = new Hono<AppEnv>().get(
         items.map((medicine) => ({
           id: medicine.id,
           name: medicine.name,
-          photo_url: medicine.photoUrl,
           timings: medicine.timings,
         })),
       );
@@ -31,7 +30,6 @@ export const listMedicinesRoute = new Hono<AppEnv>().get(
       items.map((medicine) => ({
         id: medicine.id,
         name: medicine.name,
-        photo_url: medicine.photoUrl,
         timings: medicine.timings,
         today_logs: Object.fromEntries(
           Object.entries(medicine.todayLogs).map(([timing, log]) => [

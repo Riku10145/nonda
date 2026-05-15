@@ -23,7 +23,6 @@ export const getMedicineRoute = new Hono<AppEnv>().get(
     return c.json({
       id: medicine.id,
       name: medicine.name,
-      photo_url: medicine.photoUrl,
       timings: medicine.timings,
       created_at: medicine.createdAt,
       updated_at: medicine.updatedAt,

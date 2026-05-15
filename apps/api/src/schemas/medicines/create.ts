@@ -7,7 +7,6 @@ import { TimingSchema } from "./timing.js";
 export const CreateMedicineSchema = v.object({
   name: v.pipe(v.string(), v.trim(), v.minLength(1), v.maxLength(255)),
   timings: v.pipe(v.array(TimingSchema), v.minLength(1)),
-  photo_url: v.optional(v.pipe(v.string(), v.url())),
 });
 
 export type CreateMedicineInput = v.InferOutput<typeof CreateMedicineSchema>;
