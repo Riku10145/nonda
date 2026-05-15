@@ -1,0 +1,1 @@
+ALTER TABLE "medicines" DROP COLUMN "photo_url";

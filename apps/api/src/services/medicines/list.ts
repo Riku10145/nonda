@@ -8,7 +8,6 @@ import { getJstTodayRange } from "../../utils/jst.js";
 export interface MedicineSummary {
   id: string;
   name: string;
-  photoUrl: string | null;
   timings: Timing[];
 }
 
@@ -32,7 +31,6 @@ export const listMedicines = async (db: Db, userId: string): Promise<MedicineSum
     .select({
       id: medicines.id,
       name: medicines.name,
-      photoUrl: medicines.photoUrl,
     })
     .from(medicines)
     .where(eq(medicines.userId, userId))

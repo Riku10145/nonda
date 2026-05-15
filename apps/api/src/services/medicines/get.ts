@@ -7,7 +7,6 @@ import type { Timing } from "../../schemas/medicines/timing.js";
 export interface MedicineDetail {
   id: string;
   name: string;
-  photoUrl: string | null;
   timings: Timing[];
   createdAt: Date;
   updatedAt: Date;
@@ -27,7 +26,6 @@ export const getMedicineById = async (
     .select({
       id: medicines.id,
       name: medicines.name,
-      photoUrl: medicines.photoUrl,
       createdAt: medicines.createdAt,
       updatedAt: medicines.updatedAt,
     })

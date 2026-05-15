@@ -21,7 +21,6 @@ export const updateMedicineRoute = new Hono<AppEnv>().patch(
       medicineId,
       name: body.name,
       timings: body.timings,
-      photoUrl: body.photo_url,
     });
 
     if (!updated) {
@@ -31,7 +30,6 @@ export const updateMedicineRoute = new Hono<AppEnv>().patch(
     return c.json({
       id: updated.id,
       name: updated.name,
-      photo_url: updated.photoUrl,
       timings: updated.timings,
       updated_at: updated.updatedAt,
     });

@@ -9,14 +9,12 @@ export interface UpdateMedicineParams {
   medicineId: string;
   name?: string;
   timings?: Timing[];
-  photoUrl?: string | null;
 }
 
 export interface UpdatedMedicine {
   id: string;
   name: string;
   timings: Timing[];
-  photoUrl: string | null;
   updatedAt: Date;
 }
 
@@ -41,11 +39,10 @@ export const updateMedicine = async (
     return null;
   }
 
-  const updateSet: { name?: string; photoUrl?: string | null; updatedAt: Date } = {
+  const updateSet: { name?: string; updatedAt: Date } = {
     updatedAt: new Date(),
   };
   if (params.name !== undefined) updateSet.name = params.name;
-  if (params.photoUrl !== undefined) updateSet.photoUrl = params.photoUrl;
 
   if (params.timings !== undefined) {
     const uniqueTimings = [...new Set(params.timings)];
@@ -63,7 +60,6 @@ export const updateMedicine = async (
     return {
       id: updated.id,
       name: updated.name,
-      photoUrl: updated.photoUrl,
       timings: uniqueTimings,
       updatedAt: updated.updatedAt,
     };
@@ -83,7 +79,6 @@ export const updateMedicine = async (
   return {
     id: updated.id,
     name: updated.name,
-    photoUrl: updated.photoUrl,
     timings: timingRows.map((row) => row.timing),
     updatedAt: updated.updatedAt,
   };

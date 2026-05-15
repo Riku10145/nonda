@@ -18,7 +18,6 @@ export const createMedicineRoute = new Hono<AppEnv>().post(
       userId,
       name: body.name,
       timings: body.timings,
-      photoUrl: body.photo_url ?? null,
     });
 
     return c.json(
@@ -26,7 +25,6 @@ export const createMedicineRoute = new Hono<AppEnv>().post(
         id: created.id,
         name: created.name,
         timings: created.timings,
-        photo_url: created.photoUrl,
         created_at: created.createdAt,
       },
       201,
