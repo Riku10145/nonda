@@ -1,20 +1,27 @@
 "use client";
 
+import { Button, Card, Center, Stack, Text, Title } from "@mantine/core";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 
 export default function LoginPage() {
   return (
-    <main>
-      <div>
-        <h1>nonda にログイン</h1>
-        <p>薬の飲み忘れを防ぐ服用記録アプリ</p>
-        <Suspense fallback={<LoginButton callbackUrl="/" />}>
-          <LoginButtonWithCallback />
-        </Suspense>
-      </div>
-    </main>
+    <Center mih="100dvh" p="md">
+      <Card shadow="sm" padding="lg" radius="md" withBorder w="100%" maw={360}>
+        <Stack gap="md">
+          <Stack gap={4}>
+            <Title order={2}>nonda にログイン</Title>
+            <Text c="dimmed" size="sm">
+              薬の飲み忘れを防ぐ服用記録アプリ
+            </Text>
+          </Stack>
+          <Suspense fallback={<LoginButton callbackUrl="/" />}>
+            <LoginButtonWithCallback />
+          </Suspense>
+        </Stack>
+      </Card>
+    </Center>
   );
 }
 
@@ -25,17 +32,27 @@ function LoginButtonWithCallback() {
 
 function LoginButton({ callbackUrl }: { callbackUrl: string }) {
   return (
-    <button type="button" onClick={() => signIn("google", { redirectTo: callbackUrl })}>
-      <GoogleIcon />
+    <Button
+      fullWidth
+      variant="default"
+      leftSection={<GoogleIcon />}
+      onClick={() => signIn("google", { redirectTo: callbackUrl })}
+    >
       Google でログイン
-    </button>
+    </Button>
   );
 }
 
 // TODO(#40): アイコン用途が増えたら @iconify/react 導入を検討して `logos:google-icon` 等に置き換える
 function GoogleIcon() {
   return (
-    <svg aria-hidden="true" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      aria-hidden="true"
+      width={18}
+      height={18}
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <path
         d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.76h3.56c2.08-1.92 3.28-4.74 3.28-8.09z"
         fill="#4285F4"
