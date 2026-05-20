@@ -1,11 +1,11 @@
 "use client";
 
-import { Button } from "@heroui/react";
+import { Button } from "@mantine/core";
 import { signOut } from "next-auth/react";
 
 export function LogoutButton() {
   return (
-    <Button size="sm" variant="tertiary" onPress={() => signOut({ redirectTo: "/login" })}>
+    <Button size="sm" variant="default" onClick={() => signOut({ redirectTo: "/login" })}>
       ログアウト
     </Button>
   );

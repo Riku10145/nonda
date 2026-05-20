@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { Group, Text, Title } from "@mantine/core";
 
 import { LogoutButton } from "./logout-button";
 
@@ -7,12 +8,25 @@ export async function Header() {
   const name = session?.user?.name ?? "";
 
   return (
-    <header className="flex items-center justify-between border-b border-gray-200 px-6 py-3">
-      <h1 className="text-lg font-bold">nonda</h1>
-      <div className="flex items-center gap-3">
-        {name && <span className="text-sm text-gray-700">{name}</span>}
+    <Group
+      component="header"
+      justify="space-between"
+      align="center"
+      px="lg"
+      py="sm"
+      style={{ borderBottom: "1px solid var(--mantine-color-gray-3)" }}
+    >
+      <Title order={1} size="h4">
+        nonda
+      </Title>
+      <Group gap="sm" align="center">
+        {name && (
+          <Text size="sm" c="gray.7">
+            {name}
+          </Text>
+        )}
         <LogoutButton />
-      </div>
-    </header>
+      </Group>
+    </Group>
   );
 }

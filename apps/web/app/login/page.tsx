@@ -1,25 +1,27 @@
 "use client";
 
-import { Button, Card } from "@heroui/react";
+import { Button, Card, Center, Stack, Text, Title } from "@mantine/core";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 
 export default function LoginPage() {
   return (
-    <main className="flex min-h-dvh items-center justify-center bg-background p-6">
-      <Card className="w-full max-w-sm">
-        <Card.Header>
-          <Card.Title>nonda にログイン</Card.Title>
-          <Card.Description>薬の飲み忘れを防ぐ服用記録アプリ</Card.Description>
-        </Card.Header>
-        <Card.Content>
+    <Center mih="100dvh" p="md">
+      <Card shadow="sm" padding="lg" radius="md" withBorder w="100%" maw={360}>
+        <Stack gap="md">
+          <Stack gap={4}>
+            <Title order={2}>nonda にログイン</Title>
+            <Text c="dimmed" size="sm">
+              薬の飲み忘れを防ぐ服用記録アプリ
+            </Text>
+          </Stack>
           <Suspense fallback={<LoginButton callbackUrl="/" />}>
             <LoginButtonWithCallback />
           </Suspense>
-        </Card.Content>
+        </Stack>
       </Card>
-    </main>
+    </Center>
   );
 }
 
@@ -31,11 +33,11 @@ function LoginButtonWithCallback() {
 function LoginButton({ callbackUrl }: { callbackUrl: string }) {
   return (
     <Button
-      className="w-full"
-      variant="tertiary"
-      onPress={() => signIn("google", { redirectTo: callbackUrl })}
+      fullWidth
+      variant="default"
+      leftSection={<GoogleIcon />}
+      onClick={() => signIn("google", { redirectTo: callbackUrl })}
     >
-      <GoogleIcon />
       Google でログイン
     </Button>
   );
@@ -46,7 +48,8 @@ function GoogleIcon() {
   return (
     <svg
       aria-hidden="true"
-      className="size-5"
+      width={18}
+      height={18}
       viewBox="0 0 24 24"
       xmlns="http://www.w3.org/2000/svg"
     >
