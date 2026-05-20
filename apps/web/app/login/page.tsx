@@ -1,24 +1,19 @@
 "use client";
 
-import { Button, Card } from "@heroui/react";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 
 export default function LoginPage() {
   return (
-    <main className="flex min-h-dvh items-center justify-center bg-background p-6">
-      <Card className="w-full max-w-sm">
-        <Card.Header>
-          <Card.Title>nonda にログイン</Card.Title>
-          <Card.Description>薬の飲み忘れを防ぐ服用記録アプリ</Card.Description>
-        </Card.Header>
-        <Card.Content>
-          <Suspense fallback={<LoginButton callbackUrl="/" />}>
-            <LoginButtonWithCallback />
-          </Suspense>
-        </Card.Content>
-      </Card>
+    <main>
+      <div>
+        <h1>nonda にログイン</h1>
+        <p>薬の飲み忘れを防ぐ服用記録アプリ</p>
+        <Suspense fallback={<LoginButton callbackUrl="/" />}>
+          <LoginButtonWithCallback />
+        </Suspense>
+      </div>
     </main>
   );
 }
@@ -30,26 +25,17 @@ function LoginButtonWithCallback() {
 
 function LoginButton({ callbackUrl }: { callbackUrl: string }) {
   return (
-    <Button
-      className="w-full"
-      variant="tertiary"
-      onPress={() => signIn("google", { redirectTo: callbackUrl })}
-    >
+    <button type="button" onClick={() => signIn("google", { redirectTo: callbackUrl })}>
       <GoogleIcon />
       Google でログイン
-    </Button>
+    </button>
   );
 }
 
 // TODO(#40): アイコン用途が増えたら @iconify/react 導入を検討して `logos:google-icon` 等に置き換える
 function GoogleIcon() {
   return (
-    <svg
-      aria-hidden="true"
-      className="size-5"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg aria-hidden="true" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
       <path
         d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.76h3.56c2.08-1.92 3.28-4.74 3.28-8.09z"
         fill="#4285F4"

@@ -13,8 +13,6 @@
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.10.0",
-    "@heroui/react": "^3.0.4",
-    "@heroui/styles": "^3.0.4",
     "@neondatabase/serverless": "^1.1.0",
     "@nonda/db": "workspace:*",
     "drizzle-orm": "^0.45.2",
@@ -25,13 +23,11 @@
     "react-dom": "19.2.5"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
     "@types/node": "^25",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "oxfmt": "^0.47.0",
     "oxlint": "^1.62.0",
-    "tailwindcss": "^4",
     "typescript": "^6"
   }
 }
