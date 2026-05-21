@@ -1,13 +1,9 @@
-import { Box, Title } from "@mantine/core";
+import { Title } from "@mantine/core";
 
 import { verifySession } from "@/lib/auth-guard";
 
 export default async function Home() {
   await verifySession();
 
-  return (
-    <Box p="lg">
-      <Title order={1}>Nonda</Title>
-    </Box>
-  );
+  return <Title order={1}>Nonda</Title>;
 }
