@@ -45,6 +45,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
             href={item.href}
             label={item.label}
             active={pathname === item.href}
+            onClick={() => mobileOpened && toggleMobile()}
           />
         ))}
       </AppShell.Navbar>
