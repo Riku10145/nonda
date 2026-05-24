@@ -18,7 +18,7 @@ nonda/
 | | 技術 |
 |---|---|
 | フロントエンド | Next.js 16 (App Router), TypeScript, Mantine |
-| バックエンド | Hono, TypeScript, Node.js |
+| バックエンド | Hono, TypeScript, Cloudflare Workers |
 | パッケージ管理 | pnpm |
 | Linter | oxlint |
 | Formatter | oxfmt |
