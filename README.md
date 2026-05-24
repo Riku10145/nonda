@@ -17,7 +17,7 @@ nonda/
 
 | | 技術 |
 |---|---|
-| フロントエンド | Next.js 16 (App Router), TypeScript, Tailwind CSS v4 |
+| フロントエンド | Next.js 16 (App Router), TypeScript, Mantine |
 | バックエンド | Hono, TypeScript, Node.js |
 | パッケージ管理 | pnpm |
 | Linter | oxlint |
@@ -36,6 +36,6 @@ pnpm install
 # web (localhost:3000)
 pnpm --filter web dev
 
-# api (localhost:8080)
+# api (localhost:8787)
 pnpm --filter api dev
 ```
