@@ -18,11 +18,13 @@ export const authConfig = {
     },
     authorized({ auth, request }) {
       const isLoggedIn = !!auth;
-      const isLoginPage = request.nextUrl.pathname.startsWith("/login");
+      const { pathname } = request.nextUrl;
+      const isLoginPage = pathname.startsWith("/login");
       if (isLoginPage) {
         if (isLoggedIn) return Response.redirect(new URL("/", request.nextUrl));
         return true;
       }
+      if (pathname === "/") return true;
       return isLoggedIn;
     },
   },
