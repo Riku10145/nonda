@@ -16,9 +16,9 @@ jobs:
       matrix:
         package: [web, api]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6.0.2
 
-      - uses: pnpm/action-setup@v6.0.4
+      - uses: pnpm/action-setup@v6.0.8
 
       - uses: actions/setup-node@v6.4.0
         with:
@@ -38,9 +38,9 @@ jobs:
       matrix:
         package: [web, api]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6.0.2
 
-      - uses: pnpm/action-setup@v6.0.4
+      - uses: pnpm/action-setup@v6.0.8
 
       - uses: actions/setup-node@v6.4.0
         with:
