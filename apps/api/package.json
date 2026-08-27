@@ -15,23 +15,23 @@
     "db:studio": "doppler run -- drizzle-kit studio"
   },
   "dependencies": {
-    "@hono/standard-validator": "^0.2.2",
+    "@hono/standard-validator": "^0.4.0",
     "@neondatabase/serverless": "^1.1.0",
     "@nonda/db": "workspace:*",
     "@standard-schema/spec": "^1.1.0",
     "drizzle-orm": "^0.45.2",
-    "hono": "^4.7.7",
-    "jose": "^6.2.3",
-    "valibot": "^1.0.0"
+    "hono": "^4.13.0",
+    "jose": "^6.2.8",
+    "valibot": "^1.4.2"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20251001.0",
-    "@types/node": "^25",
+    "@cloudflare/workers-types": "^5.20260804.1",
+    "@types/node": "^26",
     "drizzle-kit": "^0.31.10",
-    "oxfmt": "^0.47.0",
-    "oxlint": "^1.62.0",
-    "typescript": "^6",
-    "vitest": "^4.1.5",
-    "wrangler": "^4.0.0"
+    "oxfmt": "^0.62.0",
+    "oxlint": "^1.77.0",
+    "typescript": "^7",
+    "vitest": "^4.1.10",
+    "wrangler": "^4.119.0"
   }
 }
