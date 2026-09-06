@@ -9,7 +9,8 @@
     "lint": "oxlint",
     "lint:github": "oxlint --format=github",
     "fmt": "oxfmt .",
-    "fmt:check": "oxfmt --check ."
+    "fmt:check": "oxfmt --check .",
+    "test": "vitest run"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.10.0",
@@ -33,6 +34,7 @@
     "postcss": "^8.5.15",
     "postcss-preset-mantine": "^1.18.0",
     "postcss-simple-vars": "^7.0.1",
-    "typescript": "^6"
+    "typescript": "^6",
+    "vitest": "^4.1.5"
   }
 }

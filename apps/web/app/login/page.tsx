@@ -11,9 +11,9 @@ export default function LoginPage() {
       <Card shadow="sm" padding="lg" radius="md" withBorder w="100%" maw={360}>
         <Stack gap="md">
           <Stack gap={4}>
-            <Title order={2}>nonda にログイン</Title>
+            <Title order={2}>nonda</Title>
             <Text c="dimmed" size="sm">
-              薬の飲み忘れを防ぐ服用記録アプリ
+              薬の飲み忘れを防ぐ
             </Text>
           </Stack>
           <Suspense fallback={<LoginButton callbackUrl="/" />}>
@@ -38,7 +38,7 @@ function LoginButton({ callbackUrl }: { callbackUrl: string }) {
       leftSection={<GoogleIcon />}
       onClick={() => signIn("google", { redirectTo: callbackUrl })}
     >
-      Google でログイン
+      Googleでログイン
     </Button>
   );
 }

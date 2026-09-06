@@ -1,0 +1,48 @@
+.nonda-cal {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.nonda-cal-cell {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  text-decoration: none;
+  color: inherit;
+  font-size: 0.9rem;
+}
+
+.nonda-cal-cell[data-fill="none"] {
+  background: transparent;
+}
+
+.nonda-cal-cell[data-fill="partial"] {
+  background: var(--mantine-color-teal-2);
+}
+
+.nonda-cal-cell[data-fill="full"] {
+  background: var(--mantine-color-teal-6);
+  color: var(--mantine-color-white);
+}
+
+.nonda-cal-cell[data-today="true"] {
+  font-weight: 700;
+}
+
+.nonda-cal-cell[aria-current="date"] {
+  outline: 2px solid var(--mantine-color-teal-8);
+  outline-offset: 1px;
+}
+
+input[type="time"] {
+  font: inherit;
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--mantine-color-default-border);
+  border-radius: var(--mantine-radius-md);
+  background: var(--mantine-color-body);
+  color: inherit;
+}

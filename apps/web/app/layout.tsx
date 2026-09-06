@@ -1,13 +1,19 @@
 import "@mantine/core/styles.css";
 import "./globals.css";
 
-import { ColorSchemeScript, MantineProvider, mantineHtmlProps } from "@mantine/core";
+import { ColorSchemeScript, MantineProvider, createTheme, mantineHtmlProps } from "@mantine/core";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Nonda",
-  description: "薬の服用管理アプリ",
+  title: "nonda",
+  description: "薬の飲み忘れを防ぐ",
 };
+
+const theme = createTheme({
+  primaryColor: "teal",
+  defaultRadius: "md",
+  cursorType: "pointer",
+});
 
 export default function RootLayout({
   children,
@@ -20,7 +26,7 @@ export default function RootLayout({
         <ColorSchemeScript />
       </head>
       <body>
-        <MantineProvider>{children}</MantineProvider>
+        <MantineProvider theme={theme}>{children}</MantineProvider>
       </body>
     </html>
   );
