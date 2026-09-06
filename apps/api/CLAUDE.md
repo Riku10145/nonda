@@ -49,7 +49,7 @@ pnpm db:studio    # Drizzle Studio
 
 ## デプロイ
 
-手動の `wrangler deploy` は使わない。GitHub Actions がマイグレーション → Worker 公開 → Doppler の secrets 同期までやる。
+手動の `wrangler deploy` は使わない。GitHub Actions がマイグレーション → Worker 公開 → Doppler の secrets 同期までやる。dev は `Deploy API (dev)`（`main`）、prod は `Deploy API (prod)`（`release`）。GitHub Environment `dev` は `main` 以外を拒否するので、同じ workflow には載せない。
 
 | ブランチ  | GitHub Environment | Worker          | URL                                     |
 | --------- | ------------------ | --------------- | --------------------------------------- |
