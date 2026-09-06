@@ -43,7 +43,6 @@ function LoginButton({ callbackUrl }: { callbackUrl: string }) {
   );
 }
 
-// TODO(#40): アイコン用途が増えたら @iconify/react 導入を検討して `logos:google-icon` 等に置き換える
 function GoogleIcon() {
   return (
     <svg
