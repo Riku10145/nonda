@@ -2,12 +2,13 @@
 
 import { Avatar, Button, Card, Checkbox, Group, Stack, Text, Title } from "@mantine/core";
 import Link from "next/link";
-import { useState, useTransition } from "react";
+import { useOptimistic, useState, useTransition } from "react";
 
 import { formatJstHeading } from "@/lib/domain/jst";
 import { initialGlyph } from "@/lib/domain/medicine";
 import { TIMINGS, timingLabel } from "@/lib/domain/timing";
 import {
+  applyBoardPatch,
   isAllTaken,
   isTaken,
   laneSummaries,
@@ -19,12 +20,13 @@ import { markAllTaken, setDoseTaken } from "../actions";
 export function TodayView({ board }: { board: TodayBoard }) {
   const [pending, start] = useTransition();
   const [message, setMessage] = useState<string | null>(null);
-  const empty = TIMINGS.every((timing) => board.lanes[timing].slots.length === 0);
-  const summaries = laneSummaries(board);
+  const [view, patchBoard] = useOptimistic(board, applyBoardPatch);
+  const empty = TIMINGS.every((timing) => view.lanes[timing].slots.length === 0);
+  const summaries = laneSummaries(view);
 
   return (
     <Stack gap="lg">
-      <Title order={2}>{formatJstHeading(board.date)}</Title>
+      <Title order={2}>{formatJstHeading(view.date)}</Title>
       <Group grow>
         {summaries.map((summary) => (
           <Stack key={summary.timing} gap={2} ta="center">
@@ -51,7 +53,7 @@ export function TodayView({ board }: { board: TodayBoard }) {
         </Stack>
       ) : (
         TIMINGS.map((timing) => {
-          const lane = board.lanes[timing];
+          const lane = view.lanes[timing];
           if (lane.slots.length === 0) return null;
           return (
             <Stack key={timing} gap="xs">
@@ -64,6 +66,12 @@ export function TodayView({ board }: { board: TodayBoard }) {
                   onTaken={(taken) => {
                     setMessage(null);
                     start(async () => {
+                      patchBoard({
+                        type: "dose",
+                        medicineId: slot.medicineId,
+                        timing: slot.timing,
+                        taken,
+                      });
                       const result = await setDoseTaken(slot.medicineId, slot.timing, taken);
                       if (result.kind === "failed") setMessage(result.message);
                     });
@@ -77,10 +85,11 @@ export function TodayView({ board }: { board: TodayBoard }) {
       <Button
         fullWidth
         size="md"
-        disabled={pending || empty || isAllTaken(board)}
+        disabled={pending || empty || isAllTaken(view)}
         onClick={() => {
           setMessage(null);
           start(async () => {
+            patchBoard({ type: "all" });
             const result = await markAllTaken();
             if (result.kind === "failed") setMessage(result.message);
           });

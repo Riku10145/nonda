@@ -95,6 +95,41 @@ export const findSlot = (
   timing: Timing,
 ): DoseSlot | undefined => board.lanes[timing].slots.find((slot) => slot.medicineId === medicineId);
 
+const _OPTIMISTIC_LOG_ID = "optimistic" as LogId;
+
+export const slotWithTaken = (slot: DoseSlot, taken: boolean): DoseSlot => {
+  if (!taken) {
+    return slot.kind === "logged" ? { ...slot, taken: false } : slot;
+  }
+  if (slot.kind === "logged") return { ...slot, taken: true };
+  return {
+    kind: "logged",
+    medicineId: slot.medicineId,
+    name: slot.name,
+    timing: slot.timing,
+    logId: _OPTIMISTIC_LOG_ID,
+    taken: true,
+  };
+};
+
+export type BoardPatch =
+  | { type: "dose"; medicineId: MedicineId; timing: Timing; taken: boolean }
+  | { type: "all" };
+
+export const applyBoardPatch = (board: TodayBoard, patch: BoardPatch): TodayBoard => ({
+  date: board.date,
+  lanes: timingTriple((timing) => ({
+    timing,
+    slots: board.lanes[timing].slots.map((slot) => {
+      if (patch.type === "all") return slotWithTaken(slot, true);
+      if (slot.medicineId === patch.medicineId && slot.timing === patch.timing) {
+        return slotWithTaken(slot, patch.taken);
+      }
+      return slot;
+    }),
+  })),
+});
+
 export const commandsForSetTaken = (slot: DoseSlot, taken: boolean): DoseCommand[] => {
   if (slot.kind === "unlogged") {
     if (!taken) return [];

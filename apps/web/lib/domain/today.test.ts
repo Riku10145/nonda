@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import type { JstDate, LogId, MedicineId } from "./ids";
 import {
+  applyBoardPatch,
   buildTodayBoard,
   commandsForMarkAllTaken,
   commandsForSetTaken,
@@ -9,6 +10,7 @@ import {
   isAllTaken,
   isTaken,
   laneSummaries,
+  slotWithTaken,
   type MedicineWithLogs,
 } from "./today";
 
@@ -94,6 +96,45 @@ describe("commandsForMarkAllTaken", () => {
       },
       { type: "update", logId: "l1", taken: true },
     ]);
+  });
+});
+
+describe("applyBoardPatch", () => {
+  it("flips one slot and mark-all without mutating the source board", () => {
+    const board = buildTodayBoard(_date, [
+      _med("m1", "薬A", ["morning", "evening"], {
+        morning: { logId: _lid("l1"), taken: true },
+      }),
+    ]);
+    const unchecked = applyBoardPatch(board, {
+      type: "dose",
+      medicineId: _mid("m1"),
+      timing: "morning",
+      taken: false,
+    });
+    expect(isTaken(findSlot(unchecked, _mid("m1"), "morning")!)).toBe(false);
+    expect(isTaken(findSlot(board, _mid("m1"), "morning")!)).toBe(true);
+
+    const checked = applyBoardPatch(board, {
+      type: "dose",
+      medicineId: _mid("m1"),
+      timing: "evening",
+      taken: true,
+    });
+    expect(findSlot(checked, _mid("m1"), "evening")).toMatchObject({
+      kind: "logged",
+      taken: true,
+    });
+    expect(findSlot(board, _mid("m1"), "evening")?.kind).toBe("unlogged");
+
+    const all = applyBoardPatch(board, { type: "all" });
+    expect(isAllTaken(all)).toBe(true);
+    expect(isAllTaken(board)).toBe(false);
+  });
+
+  it("does not insert when an unlogged slot is set to not taken", () => {
+    const slot = buildTodayBoard(_date, [_med("m1", "薬A", ["morning"])]).lanes.morning.slots[0]!;
+    expect(slotWithTaken(slot, false)).toEqual(slot);
   });
 });
 
