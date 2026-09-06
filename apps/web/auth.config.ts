@@ -24,7 +24,6 @@ export const authConfig = {
         if (isLoggedIn) return Response.redirect(new URL("/", request.nextUrl));
         return true;
       }
-      if (pathname === "/") return true;
       return isLoggedIn;
     },
   },
