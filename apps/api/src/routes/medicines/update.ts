@@ -1,14 +1,14 @@
 import { Hono } from "hono";
 
 import { createDbClient } from "../../db/client.js";
-import { UpdateMedicineParamSchema, UpdateMedicineSchema } from "../../schemas/medicines/index.js";
+import { MedicineIdParamSchema, UpdateMedicineSchema } from "../../schemas/medicines/index.js";
 import { updateMedicine } from "../../services/medicines/index.js";
 import type { AppEnv } from "../../types/index.js";
 import { validator } from "../../utils/validator.js";
 
 export const updateMedicineRoute = new Hono<AppEnv>().patch(
   "/:id",
-  validator("param", UpdateMedicineParamSchema),
+  validator("param", MedicineIdParamSchema),
   validator("json", UpdateMedicineSchema),
   async (c) => {
     const userId = c.get("userId");

@@ -1,6 +1,6 @@
 import * as v from "valibot";
 
-import { UUID_REGEX } from "../../utils/uuid.js";
+import { UuidSchema } from "../../utils/uuid.js";
 import { TimingSchema } from "../medicines/timing.js";
 
 /** POST /v1/medication-logs のリクエストボディ。 */
@@ -8,7 +8,7 @@ export const CreateMedicationLogsSchema = v.object({
   logs: v.pipe(
     v.array(
       v.object({
-        medicine_id: v.pipe(v.string(), v.regex(UUID_REGEX)),
+        medicine_id: UuidSchema,
         timing: TimingSchema,
         is_taken: v.boolean(),
       }),

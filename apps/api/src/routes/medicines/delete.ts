@@ -1,14 +1,14 @@
 import { Hono } from "hono";
 
 import { createDbClient } from "../../db/client.js";
-import { DeleteMedicineParamSchema } from "../../schemas/medicines/index.js";
+import { MedicineIdParamSchema } from "../../schemas/medicines/index.js";
 import { deleteMedicineById } from "../../services/medicines/index.js";
 import type { AppEnv } from "../../types/index.js";
 import { validator } from "../../utils/validator.js";
 
 export const deleteMedicineRoute = new Hono<AppEnv>().delete(
   "/:id",
-  validator("param", DeleteMedicineParamSchema),
+  validator("param", MedicineIdParamSchema),
   async (c) => {
     const userId = c.get("userId");
     const { id: medicineId } = c.req.valid("param");
