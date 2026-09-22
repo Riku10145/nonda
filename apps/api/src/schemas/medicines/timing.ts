@@ -4,3 +4,5 @@ import * as v from "valibot";
 export const TimingSchema = v.picklist(["morning", "afternoon", "evening"]);
 
 export type Timing = v.InferOutput<typeof TimingSchema>;
+
+export const TimingsSchema = v.pipe(v.array(TimingSchema), v.minLength(1));
