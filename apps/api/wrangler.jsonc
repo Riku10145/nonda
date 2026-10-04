@@ -6,9 +6,11 @@
   "env": {
     "dev": {
       "name": "nonda-api-dev",
-      // dev デプロイ後の secrets は GitHub Actions の sync ステップで
-      // Doppler dev config から push される。
+      // secrets は GitHub Actions が Doppler から wrangler secret bulk する。
       // ここに vars を置くと Doppler との二重管理になるため空にする。
+    },
+    "production": {
+      "name": "nonda-api",
     },
   },
 }
