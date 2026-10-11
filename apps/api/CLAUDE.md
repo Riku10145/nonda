@@ -40,12 +40,28 @@ pnpm fmt:check    # Format チェックのみ
 
 ```bash
 pnpm db:generate  # schema.ts から SQL を生成
-pnpm db:migrate   # 本番/Neon に適用 (doppler 経由で DATABASE_URL を注入)
+pnpm db:migrate   # 今の Doppler config の DATABASE_URL（Neon）に適用
 pnpm db:studio    # Drizzle Studio
 ```
 
-- スキーマ変更時は `db:generate` → `drizzle/` の差分を確認 → コミット → `db:migrate`。
+- スキーマ変更時は `db:generate` → `drizzle/` の差分を確認 → コミット。適用は CI のデプロイジョブがやる。
 - 直接 SQL を書かず、`packages/db/src/schema.ts` を起点にする（apps/web からも参照される共有スキーマ）。
+
+## デプロイ
+
+手動の `wrangler deploy` は使わない。GitHub Actions がマイグレーション → Worker 公開 → Doppler の secrets 同期までやる。dev は `Deploy API (dev)`（`main`）、prod は `Deploy API (prod)`（`release`）。GitHub Environment `dev` は `main` 以外を拒否するので、同じ workflow には載せない。
+
+| ブランチ  | GitHub Environment | Worker          | URL                                     |
+| --------- | ------------------ | --------------- | --------------------------------------- |
+| `main`    | `dev`              | `nonda-api-dev` | https://nonda-api-dev.nonda.workers.dev |
+| `release` | `prod`             | `nonda-api`     | https://nonda-api.nonda.workers.dev     |
+
+Environment secrets:
+
+- `dev`: `CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID` / `DOPPLER_TOKEN_DEV`
+- `prod`: `CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID` / `DOPPLER_TOKEN_PROD`
+
+`DOPPLER_TOKEN_PROD` は本番 config の service token。その config の `DATABASE_URL` / `FRONTEND_URL` / `AUTH_SECRET` が Worker に入る。`AUTH_SECRET` は Vercel Production と同じ値。`FRONTEND_URL` は本番フロントの origin（末尾スラッシュなし）。
 
 ## コード規約
 
