@@ -1,8 +1,9 @@
 import { and, eq } from "drizzle-orm";
 
 import type { Db } from "../../db/client.js";
-import { medicines, medicineTimings } from "../../db/schema.js";
+import { medicines } from "../../db/schema.js";
 import type { Timing } from "../../schemas/medicines/timing.js";
+import { _selectTimings } from "./_timings.js";
 
 export interface MedicineDetail {
   id: string;
@@ -37,13 +38,8 @@ export const getMedicineById = async (
     return null;
   }
 
-  const timingRows = await db
-    .select({ timing: medicineTimings.timing })
-    .from(medicineTimings)
-    .where(eq(medicineTimings.medicineId, medicine.id));
-
   return {
     ...medicine,
-    timings: timingRows.map((row) => row.timing),
+    timings: await _selectTimings(db, medicine.id),
   };
 };

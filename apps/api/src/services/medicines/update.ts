@@ -3,6 +3,7 @@ import { and, eq } from "drizzle-orm";
 import type { Db } from "../../db/client.js";
 import { medicines, medicineTimings } from "../../db/schema.js";
 import type { Timing } from "../../schemas/medicines/timing.js";
+import { _insertTimings, _selectTimings, _uniqueTimings } from "./_timings.js";
 
 export interface UpdateMedicineParams {
   userId: string;
@@ -44,42 +45,32 @@ export const updateMedicine = async (
   };
   if (params.name !== undefined) updateSet.name = params.name;
 
-  if (params.timings !== undefined) {
-    const uniqueTimings = [...new Set(params.timings)];
-    const [[updated]] = await db.batch([
-      db.update(medicines).set(updateSet).where(eq(medicines.id, params.medicineId)).returning(),
-      db.delete(medicineTimings).where(eq(medicineTimings.medicineId, params.medicineId)),
-      db.insert(medicineTimings).values(
-        uniqueTimings.map((timing) => ({
-          medicineId: params.medicineId,
-          timing,
-        })),
-      ),
-    ]);
+  if (params.timings === undefined) {
+    const [updated] = await db
+      .update(medicines)
+      .set(updateSet)
+      .where(eq(medicines.id, params.medicineId))
+      .returning();
 
     return {
       id: updated.id,
       name: updated.name,
-      timings: uniqueTimings,
+      timings: await _selectTimings(db, params.medicineId),
       updatedAt: updated.updatedAt,
     };
   }
 
-  const [updated] = await db
-    .update(medicines)
-    .set(updateSet)
-    .where(eq(medicines.id, params.medicineId))
-    .returning();
-
-  const timingRows = await db
-    .select({ timing: medicineTimings.timing })
-    .from(medicineTimings)
-    .where(eq(medicineTimings.medicineId, params.medicineId));
+  const uniqueTimings = _uniqueTimings(params.timings);
+  const [[updated]] = await db.batch([
+    db.update(medicines).set(updateSet).where(eq(medicines.id, params.medicineId)).returning(),
+    db.delete(medicineTimings).where(eq(medicineTimings.medicineId, params.medicineId)),
+    _insertTimings(db, params.medicineId, uniqueTimings),
+  ]);
 
   return {
     id: updated.id,
     name: updated.name,
-    timings: timingRows.map((row) => row.timing),
+    timings: uniqueTimings,
     updatedAt: updated.updatedAt,
   };
 };
