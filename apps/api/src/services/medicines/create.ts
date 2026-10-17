@@ -1,6 +1,7 @@
 import type { Db } from "../../db/client.js";
-import { medicines, medicineTimings } from "../../db/schema.js";
+import { medicines } from "../../db/schema.js";
 import type { Timing } from "../../schemas/medicines/timing.js";
+import { _insertTimings, _uniqueTimings } from "./_timings.js";
 
 export interface CreateMedicineParams {
   userId: string;
@@ -25,7 +26,7 @@ export const createMedicine = async (
   db: Db,
   params: CreateMedicineParams,
 ): Promise<CreatedMedicine> => {
-  const uniqueTimings = [...new Set(params.timings)];
+  const uniqueTimings = _uniqueTimings(params.timings);
   const medicineId = crypto.randomUUID();
 
   const [[inserted]] = await db.batch([
@@ -37,12 +38,7 @@ export const createMedicine = async (
         name: params.name,
       })
       .returning(),
-    db.insert(medicineTimings).values(
-      uniqueTimings.map((timing) => ({
-        medicineId,
-        timing,
-      })),
-    ),
+    _insertTimings(db, medicineId, uniqueTimings),
   ]);
 
   return {
