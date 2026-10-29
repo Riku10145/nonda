@@ -16,11 +16,11 @@
     "fmt:check": "oxfmt --check ."
   },
   "dependencies": {
-    "drizzle-orm": "^0.45.3"
+    "drizzle-orm": "^0.45.4"
   },
   "devDependencies": {
-    "oxfmt": "^0.70.0",
-    "oxlint": "^1.85.0",
+    "oxfmt": "^0.72.0",
+    "oxlint": "^1.87.0",
     "typescript": "^7"
   }
 }

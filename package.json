@@ -14,6 +14,6 @@
     "onlyBuiltDependencies": ["esbuild", "lefthook", "workerd"]
   },
   "devDependencies": {
-    "lefthook": "^2.1.14"
+    "lefthook": "^2.2.1"
   }
 }
